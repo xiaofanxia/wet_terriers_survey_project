@@ -20,6 +20,14 @@ graph <- ggplot(survey, aes(x=time, y=num)) +
 
 graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
 
+min(survey$num)
+#0 min
+max(survey$num)
+#200 min = 3.3 hours
+mean(survey$num) 
+#111.5 min = 1.85 hours
+median(survey$num)
+#134 min = 2.2 hours
 
 
 ##################useless draft(might be)
