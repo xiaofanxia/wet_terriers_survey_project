@@ -19,6 +19,7 @@ graph <- ggplot(survey, aes(x=time, y=num)) +
   geom_point()
 
 graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
+graph
 
 min(survey$num)
 #0 min
@@ -29,18 +30,8 @@ mean(survey$num)
 median(survey$num)
 #134 min = 2.2 hours
 
-
-##################useless draft(might be)
-
-#Uniform the format of time:
-survey$Start.Date <- gsub("[0-9]*/[0-9]*/\\d* ","", survey$Start.Date)
-survey$Start.Date <- gsub("[A-Z]", "",survey$Start.Date)
-#survey$Start.Date <- gsub(":", ".",survey$Start.Date)
-survey$Start.Date <- gsub("[0-9]*-[0-9]*-\\d* ", "",survey$Start.Date)
-
-
-survey$End.Date <- gsub("[0-9]*/[0-9]*/\\d* ", "",survey$End.Date)
-survey$End.Date <- gsub("[A-Z]", "",survey$End.Date)
-#survey$End.Date <- gsub(":", ".",survey$End.Date)
-survey$End.Date <- gsub("[0-9]*-[0-9]*-\\d* ", "",survey$End.Date)
-dif <- suppressWarnings(as.numeric(survey$End.Date) - as.numeric(survey$Start.Date))
+#Transform one single value to a vector corresponding to a created variable:
+survey %>% separate()
+  
+  
+  
