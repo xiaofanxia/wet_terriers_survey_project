@@ -42,40 +42,9 @@ aggregate <- abind(resultlist, along=2,force.array=F)
 # the column names, remove all of them, and add in one set at the start.
 personinfo <- aggregate[,1:5]
 surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
-survey <- cbind(personinfo,surveyanswers)
+survey.nobio <- cbind(personinfo,surveyanswers)
 
-#So now you should be able to analyze the "survey" file which has all the questions.
-#And now all we need to figure out how to do is clean the "BIO" file.
-
-test <- surveyanswers %>% summarise_all(funs(sum(!is.na(.))))
-
-test2 <- apply(surveyanswers,1,function(x) sum(!is.na(x))) 
-indivs <- data.frame(y=test2)
-indivs$Prop <- 100*indivs$y/200
-
-ggplot(indivs, aes(x=Prop)) + geom_histogram(bins=25,fill="blue") + expand_limits(x=c(0,1)) +
-  labs( x="Percent of Survey Finished",y="Number of People") + theme_bw() +
-  theme(text=element_text(size=25)) + scale_y_continuous(minor_breaks = seq(1,100,1))
-
-answers <- data.frame(y <- t(test))
-colnames(answers) <- c("NumberAnswered")
-answers %<>% mutate(Prop <- 100*NumberAnswered/82)
-colnames(answers) <- c("NumberAnswered","Prop")
-ggplot(answers, aes(x=Prop)) + geom_histogram() + expand_limits(x=c(0,100)) +
-  labs(x="Percent Answered",y="Number of Questions") + theme_bw() +
-  theme(text=element_text(size=25)) + scale_y_continuous(breaks = seq(0,100,10),minor_breaks = seq(1,100,1))
-
-omitsurvey <- na.omit(surveyanswers[,137])
-
-ggplot(surveyanswers) + geom_bar(aes(x=surveyanswers[,137])) +
-  theme(axis.text.x=element_text(angle=45,hjust=1))
-
-omitsurvey<-as.data.frame(omitsurvey)
-
-ggplot(omitsurvey) + geom_bar(aes(x=omitsurvey))+
-  theme(axis.text.x=element_text(angle=45,hjust=1))
-
-
+#Read in Bio
 bio <- read.csv("Bio DATA-Table 1.csv",na.strings=c(NA,""))
 bio1 <- bio[,6:ncol(bio)]
 vals<-which(!is.na(bio1[1,]))
@@ -93,5 +62,7 @@ qnames<-c("Q1.1","Q1.2","Q1.3","Q1.4","Q1.5","Q1.6","Q1.7","Q1.8","Q1.9","Q1.10"
 
 bioans <- bio1[3:nrow(bio1),]
 colnames(bioans) <- qnames
+
+completesurvey <- cbind(personinfo,bioans,surveyanswers)
 
 
