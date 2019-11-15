@@ -31,7 +31,9 @@ median(survey$num)
 #134 min = 2.2 hours
 
 #Transform one single value to a vector corresponding to a created variable:
-survey %>% separate()
+survey[6,] <- apply(survey[6,], 2, function(x) as.numeric(as.factor(x)))
+
+
   
   
   
