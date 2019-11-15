@@ -1,13 +1,8 @@
 library(tidyverse)
 library(magrittr)
 library(abind)
-library(esquisse)
+library(lavaan)
 
-#Creates a function that reads in a file, turns missing cells into NA values
-# and then goes through a cleaning process.
-# The cleaning process draws the names for the first 5 columns from the first row
-# and the names for the remaining from the second (where Questions are).
-# Then it removes the first two rows and replaces the column names.
 rowclean <- function(filename) {
   data <- read.csv(paste0(filename),na.string=c("","NA"))
   rownum <- max(which(is.na(data[2,])==F))
@@ -42,27 +37,31 @@ aggregate <- abind(resultlist, along=2,force.array=F)
 # the column names, remove all of them, and add in one set at the start.
 personinfo <- aggregate[,1:5]
 surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
-survey.nobio <- cbind(personinfo,surveyanswers)
+survey <- cbind(personinfo,surveyanswers)
 
-#Read in Bio
-bio <- read.csv("Bio DATA-Table 1.csv",na.strings=c(NA,""))
-bio1 <- bio[,6:ncol(bio)]
-vals<-which(!is.na(bio1[1,]))
-qnames<-c("Q1.1","Q1.2","Q1.3","Q1.4","Q1.5","Q1.6","Q1.7","Q1.8","Q1.9","Q1.10",
-          "Q2.1","Q2.2","Q2.3","Q2.4","Q2.5","Q2.6","Q2.7","Q2.8","Q2.9","Q2.10",
-          "Q3.1","Q3.2","Q3.3","Q3.4","Q3.5","Q3.6","Q3.7","Q3.8","Q3.9",
-          "Q4.1","Q4.2",
-          "Q5","Q6","Q7","Q8","Q9","Q10",
-          "Q11.1","Q11.2","Q11.3","Q11.4","Q11.5","Q11.6","Q11.7","Q11.8","Q11.9","Q11.10",
-          "Q11.11","Q11.12","Q11.13","Q11.14","Q11.15","Q11.16",
-          "Q12","Q13","Q14",
-          "Q15.1","Q15.2","Q15.3","Q15.4","Q15.5","Q15.6","Q15.7",
-          "Q16","Q17",
-          "Q18")
 
-bioans <- bio1[3:nrow(bio1),]
-colnames(bioans) <- qnames
 
-completesurvey <- cbind(personinfo,bioans,surveyanswers)
+colnames(surveyanswers)[c(grep("PL1a _Confidence",colnames(surveyanswers)))] <- "PL1a_Confidence"
+colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <- "PL6c_Confidence"
+data.PL <- surveyanswers[,c(grep("PL",colnames(surveyanswers)))]
+data.PL <- data.PL[,c(grep("Confidence",colnames(data.PL)))]
+#PL.omit <- na.omit(data.PL)
+PL.factor <-lapply(data.PL,function(x) as.numeric(as.factor(x)))
+PL.factor <- as.data.frame(PL.factor)
+
+
+library(lavaan)
+PL.model <- 'pl1 =~ PL1a_Confidence + PL1b_Confidence + PL1c_Confidence + PL1d_Confidence + PL1e_Confidence + PL1f_Confidence + PL1g_Confidence
+pl2 =~ PL2a_Confidence + PL2b_Confidence + PL2c_Confidence
+pl3 =~ PL3a_Confidence + PL3b_Confidence + PL3c_Confidence + PL3d_Confidence + PL3e_Confidence
+pl4 =~ PL4a_Confidence + PL4b_Confidence + PL4c_Confidence
+pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence + PL5d_Confidence
+pl6 =~ PL6a_Confidence + PL6b_Confidence + PL6c_Confidence + PL6d_Confidence
+pl7 =~ PL7a_Confidence + PL7b_Confidence + PL7c_Confidence
+pl8 =~ PL8a_Confidence + PL8b_Confidence + PL8c_Confidence + PL8d_Confidence'
+
+
+fit <- cfa(PL.model,data=PL.factor)
+summary(fit)
 
 
