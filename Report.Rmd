@@ -1,0 +1,27 @@
+---
+title: "Project Report"
+author: "Tim, Xiaofan, Yanwen, Jingning"
+date: "11/20/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+
+## EDA(data structure) & concernes
+
+
+## Method we used 
+
+
+## Analysis
+
+
+## Conclusion / Discussion
+
+
+## Appendix
