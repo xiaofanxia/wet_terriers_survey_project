@@ -9,19 +9,25 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+# Introduction
+Client is investigating how foreign language teachers feel about and utilize methods from the Teacher Effectiveness for Language Learning (TELL), and seeking advice about how to improving the survey.
+
+Our purpose for our client in this project: 
+1.  A lot of people don’t answer the survey because it’s long. Can we reduce the number of questions?
+2.  Is the survey currently answering the research questions?
+
+# EDA(data structure) & concernes
+## Data Structure:
+
+## Concerns:
+
+# Method we used 
 
 
-## EDA(data structure) & concernes
+# Analysis
 
 
-## Method we used 
-
-
-## Analysis
-
-
-## Conclusion / Discussion
+# Conclusion / Discussion
 
 
 ## Appendix
