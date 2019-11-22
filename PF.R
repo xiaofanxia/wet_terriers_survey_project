@@ -46,7 +46,8 @@ parameterEstimates(fit3, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
 # fourth subdomain
-m4 <- 'PF4 =~ PF4a_Confidence + PF4b_Confidence'
+m4 <- 'PF4 =~ PF4a_Confidence + PF4b_Confidence
+PF5 =~ PF5a_Confidence + PF5b_Confidence + PF5c_Confidence'
 fit4 <- cfa(m4,data = PF_factor, std.lv=TRUE)
 #summary(fit1,fit.measures=TRUE,standardized=TRUE)
 parameterEstimates(fit4, standardized=TRUE)
