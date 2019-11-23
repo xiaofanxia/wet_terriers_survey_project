@@ -17,12 +17,67 @@ Our purpose for our client in this project:
 2.  Is the survey currently answering the research questions?
 
 # EDA(data structure) & concernes
+```{r, message=FALSE, echo=FALSE}
+library(lubridate)
+library(hms)
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+survey <- read.csv("survey.csv")
+
+#Uniform newest part time into POSIX objects:
+survey$Start.Date <- strptime(survey$Start.Date, format = "%m/%d/%Y %H:%M:%S")
+survey$End.Date <- strptime(survey$End.Date, format = "%m/%d/%Y %H:%M:%S")
+#Time people used to finish the survey:
+survey$time <- as.numeric(round(abs(difftime(survey$End.Date, survey$Start.Date, units = "mins")),2))
+
+#Count number of NA values in rows:
+survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
+
+#graph the plot:
+graph <- ggplot(survey, aes(x=time, y=num)) +
+  geom_point(na.rm = TRUE)
+graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
+graph
+
+time <- as.data.frame(na.omit(survey$time))
+time$num <- survey$num[1:74]
+colnames(time)[1] <- "Time people used(minutes)"
+colnames(time)[2] <- "Number of unanswered questions"
+
+par(mfrow=c(2,3))
+session1 <- filter(time,`Time people used(minutes)` <= 15)
+session2 <- filter(time, `Time people used(minutes)` > 15 & `Time people used(minutes)` <= 30)
+session3 <- filter(time, `Time people used(minutes)` > 30 & `Time people used(minutes)` <= 60)
+session4 <- filter(time, `Time people used(minutes)` > 60 & `Time people used(minutes)` <= 1000)
+session5 <- filter(time, `Time people used(minutes)` > 1000 & `Time people used(minutes)` <= 1600)
+#From 0-15min:
+p1 <- ggplot(session1, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+  geom_bar(stat = "identity") + ggtitle("Time used in 0-15 minutes") 
+#From 15-30min:
+p2 <- ggplot(session2, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+  geom_bar(stat = "identity") + ggtitle("Time used in 16-30 munites")
+#From 31-60min:
+p3 <- ggplot(session3, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+  geom_bar(stat = "identity") + ggtitle("Time used in 31-60 munites")
+#From 61-120min:
+p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+  geom_bar(stat = "identity") + ggtitle("Time used in 61-400 munites")
+#From 121-300min:
+p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+  geom_bar(stat = "identity") + ggtitle("Time used in 401-1600 munites")
+
+plot_grid(p1, p2, p3, p4, p5, labels = "AUTO")
+```
+
 ## Data Structure:
 
 ## Concerns:
 
 # Method we used 
-
+We will use Confirmatory Factor Analysis (CFA) to reduce the survey questions number.  CFA is a special form of factor analysis and mostly used in social science research. It is used to check whether measures of a construct are consistent with a researcher's understanding of the nature of that construct.  
+Here we will use CFA to see if there are survey questions equivalent to each other so we can reduce those repeated questions. We will analysis each subdomain separately and will only consider the problems regarding confidence or not. Within each subdomain, there will be several questions and our null hypothesis is that all survey questions are identical to each other. Then our alternative hypothesis is that the questions are not all equal.  
+We will focus on the p value result we have from CFA and we will take a p value larger than 0.05 to reject our null hypothesis. When we are not able to reject our null hypothesis, we will look at our factor loading to check the correlations between questions. Then we will fit new model by dropping question with lowest factor loading and see if we will reject our null hypothesis now. We will keep doing this until we have a subdomain with an acceptable p value, which gives us a set of survey questions are not identical to each other.
 
 # Analysis
 
