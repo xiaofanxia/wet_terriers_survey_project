@@ -46,6 +46,5 @@ survey <- cbind(personinfo,surveyanswers)
 #So now you should be able to analyze the "survey" file which has all the questions.
 #And now all we need to figure out how to do is clean the "BIO" file.
 
-#Export table to my computable:
-Survey <- write_csv(survey, "/Users/jingningyang/Desktop/survey.csv")
+
 

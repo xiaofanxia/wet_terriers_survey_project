@@ -24,6 +24,7 @@ Our purpose for our client in this project:
 2.  Is the survey currently answering the research questions?
 
 # EDA & Conerns
+
 ## Data Structure
 
 We are provided the data in an excel file with 6 spreadsheets including one sheet of notes, one sheet of personal information and 4 sheets of Teacher Effectiveness for Language Learning (TELL) framework survey questions. The dataset of personal information contains questions regarding respondents' teaching language and education background. The dataset of Teacher Effectiveness for Language Learning (TELL) framework survey contains around 200 questions asking about respondents' attitudes of contribution and confidence towards each practice in the framework. There are 4 domains of Teacher Effectiveness for Language Learning (TELL) survey questions: planning, learning experience, learning tools, and performance & feedback. Each domain contains several subdomains and each subdomain contains a different number of questions. For this project, we focus on reducing the number of questions in the dataset of Teacher Effectiveness for Language Learning (TELL) framework survey.
