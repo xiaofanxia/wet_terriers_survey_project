@@ -23,33 +23,45 @@ Our purpose for our client in this project:
 1.  A lot of people don’t answer the survey because it’s long. Can we reduce the number of questions?
 2.  Is the survey currently answering the research questions?
 
+
 # EDA & Conerns
 
 ## Data Structure
 
 We are provided the data in an excel file with 6 spreadsheets including one sheet of notes, one sheet of personal information and 4 sheets of Teacher Effectiveness for Language Learning (TELL) framework survey questions. The dataset of personal information contains questions regarding respondents' teaching language and education background. The dataset of Teacher Effectiveness for Language Learning (TELL) framework survey contains around 200 questions asking about respondents' attitudes of contribution and confidence towards each practice in the framework. There are 4 domains of Teacher Effectiveness for Language Learning (TELL) survey questions: planning, learning experience, learning tools, and performance & feedback. Each domain contains several subdomains and each subdomain contains a different number of questions. For this project, we focus on reducing the number of questions in the dataset of Teacher Effectiveness for Language Learning (TELL) framework survey.
 
-## Data Cleaning
+## EDA 
 
-## EDA
-We conduct a basic Exploratory Data Analysis (EDA) for this project. 
-Firstly, We focus on the time for respondents to complete this survey.
+We conduct a basic Exploratory Data Analysis (EDA) for this project. Firstly, We focus on the time for respondents to complete this survey.
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
+library(lubridate)
+library(hms)
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+survey <- read.csv("survey.csv")
+
 #Uniform newest part time into POSIX objects:
 survey$Start.Date <- strptime(survey$Start.Date, format = "%m/%d/%Y %H:%M:%S")
 survey$End.Date <- strptime(survey$End.Date, format = "%m/%d/%Y %H:%M:%S")
 #Time people used to finish the survey:
 survey$time <- as.numeric(round(abs(difftime(survey$End.Date, survey$Start.Date, units = "mins")),2))
+
 #Count number of NA values in rows:
 survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
+
 #graph the plot:
-ggplot(survey, aes(x=time, y=num))+geom_point(na.rm = TRUE)+xlab("Time people used in survey(min)")+ ylab("Number of questions they didn't answer")
+graph <- ggplot(survey, aes(x=time, y=num)) +
+  geom_point(na.rm = TRUE)
+graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
+graph
 
 time <- as.data.frame(na.omit(survey$time))
 time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
 colnames(time)[2] <- "Number of unanswered questions"
+
 par(mfrow=c(2,3))
 session1 <- filter(time,`Time people used(minutes)` <= 15)
 session2 <- filter(time, `Time people used(minutes)` > 15 & `Time people used(minutes)` <= 30)
@@ -71,8 +83,13 @@ p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`Number of unanswere
 #From 121-300min:
 p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 401-1600 munites")
+
 plot_grid(p1, p2, p3, p4, p5, labels = "AUTO")
 ```
+
+
+## Data Cleaning
+
 
 ## Concerns
 

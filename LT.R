@@ -30,7 +30,7 @@ parameterEstimates(fit2, standardized=TRUE) %>%
   filter(op == "=~") %>% 
   select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.04<0.05.
+#P-value=0.04<0.05. 
 
 #lt2b and lt2c have closer lambda.
 LT2new_model <- 'lt2 =~ LT2a_Confidence + cc*LT2b_Confidence + cc*LT2c_Confidence'
@@ -41,7 +41,7 @@ parameterEstimates(fit2new, standardized=TRUE) %>%
   filter(op == "=~") %>% 
   select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.04; Lambda: lt2-a=1.041； Question a could be saved.
+#P-value=0.04; Lambda: lt2-a=1.041； Question a could be saved. Question b&c have lambda less than 0.05. 
 
 
 LT3_model <- 'lt3 =~ LT3a_Confidence + LT3b_Confidence + LT3c_Confidence + LT3d_Confidence'
