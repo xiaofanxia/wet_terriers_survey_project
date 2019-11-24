@@ -60,31 +60,31 @@ graph
 time <- as.data.frame(na.omit(survey$time))
 time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
-colnames(time)[2] <- "Number of unanswered questions"
+colnames(time)[2] <- "# of unanswered questions"
 
-par(mfrow=c(2,3))
+par(mfrow=c(2,4))
 session1 <- filter(time,`Time people used(minutes)` <= 15)
 session2 <- filter(time, `Time people used(minutes)` > 15 & `Time people used(minutes)` <= 30)
 session3 <- filter(time, `Time people used(minutes)` > 30 & `Time people used(minutes)` <= 60)
 session4 <- filter(time, `Time people used(minutes)` > 60 & `Time people used(minutes)` <= 1000)
 session5 <- filter(time, `Time people used(minutes)` > 1000 & `Time people used(minutes)` <= 1600)
 #From 0-15min:
-p1 <- ggplot(session1, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+p1 <- ggplot(session1, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 0-15 minutes") 
 #From 15-30min:
-p2 <- ggplot(session2, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+p2 <- ggplot(session2, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 16-30 munites")
 #From 31-60min:
-p3 <- ggplot(session3, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+p3 <- ggplot(session3, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 31-60 munites")
 #From 61-120min:
-p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 61-400 munites")
 #From 121-300min:
-p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`Number of unanswered questions`)) + 
+p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 401-1600 munites")
 
-plot_grid(p1, p2, p3, p4, p5, labels = "AUTO")
+plot_grid(p1, p2, p3, p4, p5, nrow = 3, ncol = 2)
 ```
 
 
