@@ -39,122 +39,102 @@ aggregate <- abind(resultlist, along=2,force.array=F)
 personinfo <- aggregate[,1:5]
 surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
 survey <- cbind(personinfo,surveyanswers)
-
-
-
 colnames(surveyanswers)[c(grep("PL1a _Confidence",colnames(surveyanswers)))] <- "PL1a_Confidence"
 colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <- "PL6c_Confidence"
+
 data.PL <- surveyanswers[,c(grep("PL",colnames(surveyanswers)))]
 data.PL <- data.PL[,c(grep("Confidence",colnames(data.PL)))]
-ans = c("I'm not sure what this means", "Not confident at all","Somewhat Confident","Neutral","Confident","Very Confident")
+ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
 PL.ordered <- data.PL
 PL.numer <- data.PL
 for (i in 1:ncol(data.PL)) {
   PL.ordered[,i] <- factor(data.PL[,i],levels=ans)
   PL.numer[,i] <- as.numeric(PL.ordered[,i])
 }
+colnames(PL.numer) <- colnames(data.PL)
 
-##The Lavaan Stuff
-PL.model <- 'pl1 =~ PL1a_Confidence + PL1b_Confidence + PL1c_Confidence + PL1d_Confidence + PL1e_Confidence + PL1f_Confidence + PL1g_Confidence
-pl2 =~ PL2a_Confidence + PL2b_Confidence + PL2c_Confidence
-pl3 =~ PL3a_Confidence + PL3b_Confidence + PL3c_Confidence + PL3d_Confidence + PL3e_Confidence
-pl4 =~ PL4a_Confidence + PL4b_Confidence + PL4c_Confidence
-pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence + PL5d_Confidence
-pl6 =~ PL6a_Confidence + PL6b_Confidence + PL6c_Confidence + PL6d_Confidence
-pl7 =~ PL7a_Confidence + PL7b_Confidence + PL7c_Confidence
-pl8 =~ PL8a_Confidence + PL8b_Confidence + PL8c_Confidence + PL8d_Confidence'
 
-PL1 <- 'pl1 =~ PL1a_Confidence + PL1b_Confidence + PL1c_Confidence + PL1d_Confidence + PL1e_Confidence + PL1f_Confidence + PL1g_Confidence'
-fit1 <- cfa(PL1,data=PL.numer)
+#Lavaan Stuff
+
+PL1 <- 'pl1 =~ PL1a_Confidence + PL1b_Confidence + PL1c_Confidence + PL1d_Confidence + PL1f_Confidence + PL1g_Confidence
+PL1a_Confidence ~~ PL1f_Confidence'
+fit1 <- cfa(PL1,data=PL.numer,std.lv=T)
+summary(fit1,standardized=T)
+fitMeasures(fit1)
+modificationIndices(fit1)
 parameterEstimates(fit1,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL1.1 <- 'pl1 =~ PL1a_Confidence + PL1c_Confidence + PL1e_Confidence + PL1f_Confidence'
-fit1.1 <- cfa(PL1.1,data=PL.numer)
-parameterEstimates(fit1.1,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-
-PL2 <- 'pl2 =~ PL2a_Confidence + PL2b_Confidence + PL2c_Confidence'
-fit2 <- cfa(PL2,PL.numer)
+PL2 <- 'pl2 =~ aa*PL2a_Confidence + aa*PL2b_Confidence + PL2c_Confidence'
+fit2 <- cfa(PL2,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit2,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit2) #No degrees of freedom if there are three questions.
+modificationIndices(fit2) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit2,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL2.1 <- 'pl2 =~ PL2a_Confidence + PL2b_Confidence'
-fit2.1 <- cfa(PL2.1,PL.numer)
-parameterEstimates(fit2.1,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-
-
-## Something is wrong with including PL3e_Confidence.
-PL3 <- 'pl3 =~ PL3a_Confidence +  PL3c_Confidence'
-fit3 <- cfa(PL3,PL.numer)
+PL3 <- 'pl3 =~ PL3a_Confidence + aa*PL3d_Confidence + aa*PL3e_Confidence'
+fit3 <- cfa(PL3,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit3,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit3) #No degrees of freedom if there are three questions.
+modificationIndices(fit3) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit3,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
 
-PL4 <- 'pl4 =~ PL4a_Confidence + PL4b_Confidence + PL4c_Confidence'
-fit4 <- cfa(PL4,PL.numer)
+PL4 <- 'pl4 =~ aa*PL4a_Confidence + aa*PL4b_Confidence + PL4c_Confidence'
+fit4 <- cfa(PL4,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit4,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit4) #No degrees of freedom if there are three questions.
+modificationIndices(fit4) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit4,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL5 <- 'pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence'
-fit5 <- cfa(PL5,PL.numer)
+PL5 <- 'pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence + PL5d_Confidence'
+fit5 <- cfa(PL5,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit5,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit5) #No degrees of freedom if there are three questions.
+modificationIndices(fit5) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit5,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL6 <- 'pl6 =~ PL6a_Confidence + PL6b_Confidence + PL6c_Confidence'
-fit6 <- cfa(PL6,PL.numer)
+PL6 <- 'pl6 =~ aa*PL6a_Confidence + aa*PL6b_Confidence + PL6c_Confidence'
+fit6 <- cfa(PL6,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit6,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit6) #No degrees of freedom if there are three questions.
+modificationIndices(fit6) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit6,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL7 <- 'pl7 =~ PL7a_Confidence + PL7b_Confidence + PL7c_Confidence'
-fit7 <- cfa(PL7,PL.numer)
+PL7 <- 'pl7 =~ aa*PL7a_Confidence + PL7b_Confidence + aa*PL7c_Confidence'
+fit7 <- cfa(PL7,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit7,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit7) #No degrees of freedom if there are three questions.
+modificationIndices(fit7) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit7,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-PL8 <- 'pl8 =~ PL8a_Confidence + PL8b_Confidence + PL8c_Confidence'
-fit8 <- cfa(PL8,PL.numer)
+PL8 <- 'pl8 =~ PL8a_Confidence + aa*PL8b_Confidence + aa*PL8c_Confidence'
+fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit8,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+fitMeasures(fit8) #No degrees of freedom if there are three questions.
+modificationIndices(fit8) #Lambda for each thing. Pick the two closest Lambdas and then set them to be the same with aa*
 parameterEstimates(fit8,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 
-fit <- cfa(PL.model,data=PL.numer)
-parameterEstimates(fit,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-
-PL.new <- '
-pl1 =~ PL1a_Confidence + PL1c_Confidence + PL1e_Confidence + PL1f_Confidence
-pl2 =~ PL2a_Confidence + PL2b_Confidence + PL2c_Confidence
-pl3 =~ PL3a_Confidence + PL3b_Confidence
-pl4 =~ PL4a_Confidence + PL4b_Confidence + PL4c_Confidence
-pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence
-pl6 =~ PL6a_Confidence + PL6b_Confidence + PL6c_Confidence
-pl7 =~ PL7a_Confidence + PL7b_Confidence + PL7c_Confidence
-pl8 =~ PL8a_Confidence + PL8b_Confidence + PL8c_Confidence
-'
-fit.new <- cfa(PL.new, data=PL.numer)
-parameterEstimates(fit.new,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
