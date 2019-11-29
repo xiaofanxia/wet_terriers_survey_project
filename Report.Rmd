@@ -40,34 +40,29 @@ We are provided the data in an excel file with 6 spreadsheets including one shee
 
 We conduct a basic Exploratory Data Analysis (EDA) for this project. Firstly, We focus on the time for respondents to complete this survey.
 
-```{r hist of user review counts,fig.height=5,fig.width=7}
+```{r, message=FALSE, echo=FALSE}
 library(lubridate)
 library(hms)
 library(ggplot2)
 library(dplyr)
 library(cowplot)
 survey <- read.csv("survey.csv")
-
 #Uniform newest part time into POSIX objects:
 survey$Start.Date <- strptime(survey$Start.Date, format = "%m/%d/%Y %H:%M:%S")
 survey$End.Date <- strptime(survey$End.Date, format = "%m/%d/%Y %H:%M:%S")
 #Time people used to finish the survey:
 survey$time <- as.numeric(round(abs(difftime(survey$End.Date, survey$Start.Date, units = "mins")),2))
-
 #Count number of NA values in rows:
 survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
-
 #graph the plot:
 graph <- ggplot(survey, aes(x=time, y=num)) +
   geom_point(na.rm = TRUE)
 graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
 graph
-
 time <- as.data.frame(na.omit(survey$time))
 time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
 colnames(time)[2] <- "# of unanswered questions"
-
 par(mfrow=c(2,4))
 session1 <- filter(time,`Time people used(minutes)` <= 15)
 session2 <- filter(time, `Time people used(minutes)` > 15 & `Time people used(minutes)` <= 30)
@@ -89,7 +84,6 @@ p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`# of unanswered que
 #From 121-300min:
 p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
   geom_bar(stat = "identity") + ggtitle("Time used in 401-1600 munites")
-
 plot_grid(p1, p2, p3, p4, p5, nrow = 3, ncol = 2)
 ```
 
@@ -123,23 +117,18 @@ rowclean <- function(filename) {
   colnames(clean) <- c(t(names))
   return(clean)
 }
-
 filenames <- list.files()
 selectfiles <- filenames[grep("TELL Statements",filenames,perl=FALSE)]
 resultlist <- vector("list",length(selectfiles))
-
 for(i in 1:length(selectfiles)) {
   resultlist[[i]] <- rowclean(selectfiles[i])
 }
-
 aggregate <- abind(resultlist, along=2,force.array=F)
-
 personinfo <- aggregate[,1:5]
 surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
 survey <- cbind(personinfo,surveyanswers)
 colnames(surveyanswers)[c(grep("LT1a _Confidence",colnames(surveyanswers)))] <- "LT1a_Confidence"
 colnames(surveyanswers)[c(grep("LT5c_Contributes.1",colnames(surveyanswers)))] <- "LT56c_Confidence"
-
 data.LT <- surveyanswers[,c(grep("LT",colnames(surveyanswers)))]
 data.LT <- data.LT[,c(grep("Confidence",colnames(data.LT)))]
 ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
@@ -150,7 +139,6 @@ for (i in 1:ncol(data.LT)) {
   LT.numer[,i] <- as.numeric(LT.ordered[,i])
 }
 colnames(LT.numer) <- colnames(data.LT)
-
 ```
 
 ## Learning Tool Domain Analysis
@@ -165,7 +153,6 @@ parameterEstimates(fit1,standardized=T) %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #P-value=0.741>0.05. Factor loadings: a-0.488;b-0.472;c-0.722. cfi=1;ltli=1.607.
-
 LT2 <- 'lt2 =~ aa*LT2a_Confidence + aa*LT2b_Confidence + LT2c_Confidence'
 fit2 <- cfa(LT2,data=LT.numer,std.lv=T)
 summary(fit2,standardized=T)
@@ -176,7 +163,6 @@ parameterEstimates(fit2,standardized=T) %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #P-value=0.953>0.05. Factor loadings: a-0.587;b-0.603;c-0.817. cfi=1; tli=1.234.
-
 LT3 <- 'lt3 =~ LT3a_Confidence + aa*LT3b_Confidence + aa*LT3d_Confidence'
 fit3 <- cfa(LT3,data=LT.numer,std.lv=T)
 summary(fit3,standardized=T)
@@ -188,7 +174,6 @@ parameterEstimates(fit3,standardized=T) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #Initial p-value with 4 questions is 0.008. 
 #After dropping question c, the p-value=0.897. Factor loadings:a-0.959;b-0.802;c-0.629. cfi=1;tli=1.087.
-
 LT4 <- 'lt4 =~ LT4a_Confidence + aa*LT4b_Confidence + aa*LT4c_Confidence'
 fit4 <- cfa(LT4,data=LT.numer,std.lv=T)
 summary(fit4,standardized=T)
@@ -199,8 +184,6 @@ parameterEstimates(fit4,standardized=T) %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #P-value=0.899. Factor loadings: a-0.469;b-1.012;c-0.886. cfi=1; tli=1.06.
-
-
 LT5 <- 'lt5 =~ aa*LT5a_Confidence + LT5b_Confidence + aa*LT5c_Confidence'
 fit5 <- cfa(LT5,data=LT.numer,std.lv=T)
 summary(fit5,standardized=T)
@@ -211,8 +194,6 @@ parameterEstimates(fit5,standardized=T) %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #P-value=0.379. Factor loadings: a-0.618;b-0.844;c-0.532. cfi=1; tli=1.055.
-
-
 ```
 
 ## PER & FEEDBACK Domain Analysis
@@ -224,7 +205,6 @@ library(tidyverse)
 library(lavaan)
 library(magrittr)
 library(kableExtra)
-
 rowclean <- function(filename) {
   data <- read.csv(paste0(filename),na.string=c("","NA"))
   rownum <- max(which(is.na(data[2,])==F))
@@ -240,7 +220,6 @@ rowclean <- function(filename) {
 filenames <- list.files()
 selectfiles <- filenames[grep("TELL Statements",filenames,perl=FALSE)]
 resultlist <- vector("list",length(selectfiles))
-
 for(i in 1:length(selectfiles)) {
   resultlist[[i]] <- rowclean(selectfiles[i])
 }
@@ -250,7 +229,6 @@ surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
 survey <- cbind(personinfo,surveyanswers)
 colnames(surveyanswers)[c(grep("PF1a _Confidence",colnames(surveyanswers)))] <- "PF1a_Confidence"
 colnames(surveyanswers)[c(grep("PF5c_Contributes.1",colnames(surveyanswers)))] <- "PF5c_Confidence"
-
 data.PF <- surveyanswers[,c(grep("PF",colnames(surveyanswers)))]
 data.PF <- data.PF[,c(grep("Confidence",colnames(data.PF)))]
 ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
@@ -261,8 +239,6 @@ for (i in 1:ncol(data.PF)) {
   PF.number[,i] <- as.numeric(PF.ordered[,i])
 }
 colnames(PF.number) <- colnames(data.PF)
-
-
 # First subdomain
 m1 <- 'PF1 =~ PF1a_Confidence + PF1b_Confidence + PF1c_Confidence + PF1d_Confidence + PF1e_Confidence'
 fit1 <- cfa(m1,data = PF.number, std.lv=TRUE)
@@ -349,7 +325,131 @@ summary(fit4.1,standardized=T)
 ```
 P-value is 0.362 > 0.05, thus no longer remodel this subdomain.
 
+## Learning Experience Domain Analysis
+For learning experience table in TELL Statements, we numeric character answers of LE 1a~6d Confidence, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LE1 has 5 variables: LE1a_Confidence, LE1b_Confidence, LE1c_Confidence,LE1d_Confidence and LE1e_Confidence).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results
+
+## First subdomian
+```{r,echo=F}
+rowclean <- function(filename) {
+  data <- read.csv(paste0(filename),na.string=c("","NA"))
+  rownum <- max(which(is.na(data[2,])==F))
+  clean <- data[,1:rownum]
+  colnames(clean) = NULL
+  names1 <- clean[1,1:5]
+  names2 <- clean[2,6:rownum]
+  names<- cbind(names1, names2)
+  clean <- clean[3:nrow(clean),]
+  colnames(clean) <- c(t(names))
+  return(clean)
+}
+filenames <- list.files()
+selectfiles <- filenames[grep("TELL Statements",filenames,perl=FALSE)]
+resultlist <- vector("list",length(selectfiles))
+for(i in 1:length(selectfiles)) {
+  resultlist[[i]] <- rowclean(selectfiles[i])
+}
+aggregate <- abind(resultlist, along=2,force.array=F)
+personinfo <- aggregate[,1:5]
+surveyanswers <- aggregate[,-which(names(aggregate) %in% names(personinfo))]
+survey <- cbind(personinfo,surveyanswers)
+
+PL.factor <- select(survey,'LE1a_Contributes':'LE6d_Confidence')
+PL.factor <-lapply(PL.factor,function(x) as.numeric(as.factor(x)))
+PL.factor <- as.data.frame(PL.factor)
+LE1model<-'LE1 =~LE1a_Confidence+LE1b_Confidence+LE1c_Confidence+LE1d_Confidence+LE1e_Confidence'
+fitLE1 <- cfa(LE1model,data=PL.factor)
+summary(fitLE1)
+parameterEstimates(fitLE1, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+The p-value of this subdomian is 0.762, so we will keep all the questions in this subdomian.
+
+## Second Subdomain
+```{r,echo=F}
+LE2model<-'LE2 =~LE2a_Confidence+LE2b_Confidence+LE2c_Confidence+LE2d_Confidence+LE2e_Confidence+LE2f_Confidence'
+fitLE2 <- cfa(LE2model,data=PL.factor)
+summary(fitLE2)
+parameterEstimates(fitLE2, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+
+```
+
+In the second subdomain, the p-value is 0.028<0.05, so we will drop the question LE2a to see how the model will be.
+```{r,echo=F}
+LE2model<-'LE2 =~LE2b_Confidence+LE2c_Confidence+LE2d_Confidence+LE2e_Confidence+LE2f_Confidence'
+fitLE2 <- cfa(LE2model,data=PL.factor)
+summary(fitLE2)
+parameterEstimates(fitLE2, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+After dropping the LE2a, we have a p value of 0.9>0.05. So we will keep all the other questions.
+
+## Third Subdomain
+```{r,echo=F}
+LE3model<-'LE3 =~LE3a_Confidence+LE3b_Confidence+LE3c_Confidence+LE3d_Confidence+LE3e_Confidence+LE3f_Confidence+LE3g_Confidence'
+fitLE3 <- cfa(LE3model,data=PL.factor)
+summary(fitLE3)
+parameterEstimates(fitLE3, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+
+```
+
+In the third subdomian,we have a p value of 0.117>0.05, so we will keep all the questions.
+
+## Fourth Subdomain
+```{r,echo=F}
+LE4model<-'LE4 =~LE4a_Confidence+LE4b_Confidence+LE4c_Confidence+LE4d_Confidence+LE4e_Confidence'
+fitLE4 <- cfa(LE4model,data=PL.factor)
+summary(fitLE4)
+parameterEstimates(fitLE4, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+
+```
+
+In the fourth subdomain, we have a p value of 0.153. We will keep all the questions in this subdomain.
+
+## Fifth subdomain
+```{r,echo=F}
+LE5model<-'LE5 =~LE5a_Confidence+LE5b_Confidence+LE5c_Confidence+LE5d_Confidence'
+fitLE5 <- cfa(LE5model,data=PL.factor)
+summary(fitLE5)
+parameterEstimates(fitLE5, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+In the fifth subdomain, we have a p-value of 0.123, so we will keep all the questions in this dubdomain.
+
+## Sixth subdomain
+```{r,echo=F}
+LE6model<-'LE6 =~LE6a_Confidence+LE6b_Confidence+LE6c_Confidence+LE6d_Confidence'
+fitLE6 <- cfa(LE6model,data=PL.factor)
+summary(fitLE6)
+parameterEstimates(fitLE6, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+
+
+```
+
+In the sixth subdomain, the p-value is 0.66>0.05. We will not drop any question in this subdomain.
+
 # Conclusion / Discussion
-For PER&FEEDBACK table, I dropped "PF1e_Confidence","PF2c_Confidence" and "PF5c_Confidence" so that P-value of all subdomains are greater than 0.05 finally.
+For PER&FEEDBACK table, I dropped "PF1e_Confidence","PF2c_Confidence" and "PF5c_Confidence" so that P-value of all subdomains are greater than 0.05 finally.  
+For the Learning Experience table, we will only drop "LE2a_Confidence" and keep all the remaining questions in order to let the P-value of all subdomains are greater than 0.05 finally.
 
 ## Appendix
