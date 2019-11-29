@@ -40,7 +40,7 @@ We are provided the data in an excel file with 6 spreadsheets including one shee
 
 We conduct a basic Exploratory Data Analysis (EDA) for this project. Firstly, We focus on the time for respondents to complete this survey.
 
-```{r, message=FALSE, echo=FALSE}
+```{r hist of user review counts,fig.height=5,fig.width=7}
 library(lubridate)
 library(hms)
 library(ggplot2)
