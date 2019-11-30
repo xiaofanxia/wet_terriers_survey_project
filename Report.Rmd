@@ -23,7 +23,8 @@ survey <- read.csv("survey.csv")
 ```
 
 # Introduction
-Client is investigating how foreign language teachers feel about and utilize methods from the Teacher Effectiveness for Language Learning (TELL), and seeking advice about how to improving the survey.
+Our client, Catherine Ritz, a professor at Boston University’s Department of Education, administered a survey pilot, completed by 86 individuals. Her goal was to investigate how foreign language teachers felt about the TELL Framework, a set of suggested characteristics a model foreign language teachers should have. In particular, she was interested in seeing if the would differ by the teacher’s demographic or the language of teaching. Her survey included 18 questions regarding the teacher’s backgrounds, and 200 questions regarding the TELL Framework. In particular, she took the listed characteristics from four of the major domains, and asked two questions about each one: if the teacher thought it was important for model teaching, and if the teacher was confident in applying it.
+At our intake meeting, our client discussed improving the survey design for her final study. In particular, she was looking for a way to reduce the number of survey questions. 
 
 Our purpose for our client in this project: 
 1.  A lot of people don’t answer the survey because it’s long. Can we reduce the number of questions?
@@ -95,7 +96,7 @@ plot_grid(p1, p2, p3, p4, p5, nrow = 3, ncol = 2)
 
 We come up with several concerns after the initial EDA. Firstly, the observations we can use in the analysis are very limited since there are many N/A in the dataset. Secondly, some respondents seem like choosing the same answer through the whole survey and if we identify these answers as non-valid, then our sample size would become even smaller. With this limited sample size, the accuracy and reference of results from our subsequent analysis could be affected.
 
-# Method we used 
+## Methods 
 
 We will use Confirmatory Factor Analysis (CFA) to reduce the survey questions number.  CFA is a special form of factor analysis and mostly used in social science research. It is used to check whether measures of a construct are consistent with a researcher's understanding of the nature of that construct.  
 Here we will use CFA to see if there are survey questions equivalent to each other so we can reduce those repeated questions. We will analysis each subdomain separately and will only consider the problems regarding confidence or not. Within each subdomain, there will be several questions and our null hypothesis is that all survey questions are identical to each other. Then our alternative hypothesis is that the questions are not all equal.  
@@ -140,6 +141,75 @@ for (i in 1:ncol(data.LT)) {
 }
 colnames(LT.numer) <- colnames(data.LT)
 ```
+
+## "Planning" Subdomain Analysis
+
+```{r, echo=FALSE}
+survey <- cbind(personinfo,surveyanswers)
+colnames(surveyanswers)[c(grep("PL1a _Confidence",colnames(surveyanswers)))] <- "PL1a_Confidence"
+colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <- "PL6c_Confidence"
+
+data.PL <- surveyanswers[,c(grep("PL",colnames(surveyanswers)))]
+data.PL <- data.PL[,c(grep("Confidence",colnames(data.PL)))]
+ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
+PL.ordered <- data.PL
+PL.numer <- data.PL
+for (i in 1:ncol(data.PL)) {
+  PL.ordered[,i] <- factor(data.PL[,i],levels=ans)
+  PL.numer[,i] <- as.numeric(PL.ordered[,i])
+}
+colnames(PL.numer) <- colnames(data.PL)
+
+
+PL1 <- 'pl1 =~ PL1a_Confidence + PL1b_Confidence + PL1c_Confidence + PL1d_Confidence + PL1f_Confidence
+PL1a_Confidence ~~ PL1f_Confidence'
+fit1 <- cfa(PL1,data=PL.numer,std.lv=T) 
+PL1table <- c("PL1","PL1a,PL1b,PL1c,PL1d,PL1f",0.887, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
+
+
+PL2 <- 'pl2 =~ aa*PL2a_Confidence + aa*PL2b_Confidence + PL2c_Confidence'
+fit2 <- cfa(PL2,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL2table <- c("PL2","PL2a,PL2b,PL2c",0.292, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
+
+PL3 <- 'pl3 =~ PL3a_Confidence + aa*PL3d_Confidence + aa*PL3e_Confidence'
+fit3 <- cfa(PL3,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL3table <- c("PL3","PL3a,PL3d,PL3e",0.902, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
+
+
+PL4 <- 'pl4 =~ aa*PL4a_Confidence + aa*PL4b_Confidence + PL4c_Confidence'
+fit4 <- cfa(PL4,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL4table <- c("PL4","PL4a,PL4b,PL4c",0.051, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
+
+PL5 <- 'pl5 =~ PL5a_Confidence + PL5b_Confidence + PL5c_Confidence + PL5d_Confidence'
+fit5 <- cfa(PL5,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL5table <- c("PL5","PL5a,PL5b,PL5c,PL5d",0.261, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
+
+
+PL6 <- 'pl6 =~ aa*PL6a_Confidence + aa*PL6b_Confidence + PL6c_Confidence'
+fit6 <- cfa(PL6,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL6table <- c("PL6","PL6a,PL6b,PL6c",0.283, round(fitMeasures(fit6)[c("cfi")],digits=3),round(fitMeasures(fit6)[c("tli")],digits=3))
+
+PL7 <- 'pl7 =~ aa*PL7a_Confidence + PL7b_Confidence + aa*PL7c_Confidence'
+fit7 <- cfa(PL7,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL7table <- c("PL7","PL7a,PL7b,PL7c",0.903, round(fitMeasures(fit7)[c("cfi")],digits=3),round(fitMeasures(fit7)[c("tli")],digits=3))
+
+
+PL8 <- 'pl8 =~ PL8a_Confidence + aa*PL8b_Confidence + aa*PL8c_Confidence'
+fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
+PL8table <- c("PL8","PL8a,PL8b,PL8c",0.301, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
+```
+
+```{r}
+PLTable <- rbind(PL1table,PL2table,PL3table,PL4table,PL5table,PL6table,PL7table,PL8table)
+colnames(PLTable) <- c("Section","Questions","P-Value","CFI","TLI")
+rownames(PLTable) <- NULL
+kable(PLTable,digits=3,booktabs=T,caption="TABLE A: 'Planning' Subdomain Summary")
+```
+
+Summary statistics for the subdomains of PL1 are shown in Table A. Questions were removed based on our protocol, and the remaining questions are shown in the “Questions” table. Questions PL1e, PL1g, PL3b,PL3c, PL6d, and PL8d were removed. All additional questions were found to not fit well within the model, and may need to be treated separately.
+The models meet the gold standard of a Comparative Fit Index (CFI) of 0.90, indicating that there is not a major discrepancy between the hypothetical models and the data. The Tucker-Lewis Index (TLI) for each model are also close or lower to 1, supporting that the data and models seem to be close. 
+The P-values for each of the model all are relatively high, indicating that they most likely follow the null hypothesis. Effectively, this means that the questions within the model can be grouped into their subdomain. PL4 may be the only exception, since it has a P-value close to 0.051. However, the CFI and TLI of the model remain high, so it may be correct to use it as one model.
+
 
 ## Learning Tool Domain Analysis
 For Learning Tools table in TELL Statements, we numeric character answers of LT 1a~5c Confidence, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LT1 has 3 variables: LT1a_Confidence, LT1b_Confidence, LT1c_Confidence).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results:
@@ -496,5 +566,6 @@ In the sixth subdomain, the p-value is 0.66>0.05. We will not drop any question 
 For PER&FEEDBACK table, I dropped "PF1e_Confidence","PF2c_Confidence" and "PF5c_Confidence" so that P-value of all subdomains are greater than 0.05 finally.  
 For the Learning Experience table, we will only drop "LE2a_Confidence" and keep all the remaining questions in order to let the P-value of all subdomains are greater than 0.05 finally.      
 For the Learning Experience table, we will only drop "LT3c_Confidence" and keep all the remaining questions in order to let the P-value of all subdomains are greater than 0.05 finally.
+
 
 ## Appendix
