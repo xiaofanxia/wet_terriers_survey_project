@@ -189,7 +189,7 @@ parameterEstimates(fit3,standardized=T) %>%
 #Initial p-value with 4 questions is 0.008. 
 ```
 
-Since p-value of the third subdomain is 0.008 < 0.05, and question LT3c_Confidence has the lowest factor loading 0.604, we drop LT3_c_Confidence and then remodel the third subdomain. 
+Since p-value of the third subdomain is 0.008 < 0.05, and question "LT3c_Confidence" has the lowest factor loading 0.604, we drop "LT3_c_Confidence" and then remodel the third subdomain. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
 LT3_new <- 'lt3 =~ LT3a_Confidence + aa*LT3b_Confidence + aa*LT3d_Confidence'
@@ -205,7 +205,7 @@ parameterEstimates(fit3new,standardized=T) %>%
 #After dropping question c, the p-value=0.897. Factor loadings:a-0.959;b-0.802;d-0.629. cfi=1;tli=1.087.
 ```
 
-After we remodel the third subdomain, the p-value of third domain is 0.897 > 0.05. Then we can save all the remaining questions in the third subdomain (LT3a_Confidence, LT3b_Confidence, LT3d_Confidence). 
+After we remodel the third subdomain, the p-value of third domain is 0.897 > 0.05. Then we can save all the remaining questions in the third subdomain ("LT3a_Confidence", "LT3b_Confidence", "LT3d_Confidence"). 
 
 # Fourth subdomain
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
