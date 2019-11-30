@@ -40,7 +40,7 @@ We are provided the data in an excel file with 6 spreadsheets including one shee
 
 We conduct a basic Exploratory Data Analysis (EDA) for this project. Firstly, We focus on the time for respondents to complete this survey.
 
-```{r, message=FALSE, echo=FALSE}
+```{r hist of user review counts,fig.height=8,fig.width=7, message=FALSE, echo=FALSE}
 library(lubridate)
 library(hms)
 library(ggplot2)
@@ -55,10 +55,10 @@ survey$time <- as.numeric(round(abs(difftime(survey$End.Date, survey$Start.Date,
 #Count number of NA values in rows:
 survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
 #graph the plot:
-graph <- ggplot(survey, aes(x=time, y=num)) +
-  geom_point(na.rm = TRUE)
-graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
-graph
+# graph <- ggplot(survey, aes(x=time, y=num)) +
+#   geom_point(na.rm = TRUE)
+# graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
+# graph
 time <- as.data.frame(na.omit(survey$time))
 time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
