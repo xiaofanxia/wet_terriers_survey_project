@@ -444,7 +444,7 @@ PL1table <- c('PL1', "PL1a, PL1b, PL1c, PL1d", 0.967, round(fitMeasures(fit1.1[c
 
 m2.1 <- m2 <- 'PF2 =~ PF2a_Confidence + PF2b_Confidence + PF2d_Confidence + PF2e_Confidence'
 fit2.1 <- cfa(m2.1,data = PF.number, std.lv=TRUE)
-PL2table <- c('PL2', "PL2a, PL2b, PL2d, PL2e")
+PL2table <- c('PL2', "PL2a, PL2b, PL2d, PL2e", 0.459, round(fitMeasures(fit1.1[c("cfi")], digits=3), round(fitMeasures(fit1.1[c("tli")], digits=3))))
 
 m3 <- 'PF3 =~ PF3a_Confidence + PF3b_Confidence + PF3c_Confidence + PF3d_Confidence + PF3e_Confidence'
 fit3 <- cfa(m3,data = PF.number, std.lv=TRUE)
