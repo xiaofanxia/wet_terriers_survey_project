@@ -197,6 +197,7 @@ PL7table <- c("PL7","PL7a,PL7b,PL7c",0.903, round(fitMeasures(fit7)[c("cfi")],di
 PL8 <- 'pl8 =~ PL8a_Confidence + aa*PL8b_Confidence + aa*PL8c_Confidence'
 fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
 PL8table <- c("PL8","PL8a,PL8b,PL8c",0.301, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
+
 ```
 
 ```{r}
@@ -364,8 +365,6 @@ parameterEstimates(fit1, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #Factor loadings: 0.609; 0.830; 0.946; 0.915; 0.587
 ```
-
-
 Since p-value of first subdomain is 0.008 < 0.05, and the factor loadings of "PF1e_Confidence" is lowest, thus, we try to drop it from the first subdomain: 
 ```{r, echo=FALSE}
 m1.1 <- 'PF1 =~ PF1a_Confidence + PF1b_Confidence + PF1c_Confidence + PF1d_Confidence'
@@ -437,6 +436,32 @@ fit4.1 <- cfa(m4.1,data = PF.number, std.lv=TRUE)
 summary(fit4.1,standardized=T)
 ```
 P-value is 0.362 > 0.05, thus no longer remodel this subdomain.
+Finally, we check our current subdomains in Performance & Feedback table again:
+```{r, echo=FALSE}
+m1.1 <- 'PF1 =~ PF1a_Confidence + PF1b_Confidence + PF1c_Confidence + PF1d_Confidence'
+fit1.1 <- cfa(m1.1,data = PF.number, std.lv=TRUE)
+PL1table <- c('PL1', "PL1a, PL1b, PL1c, PL1d", 0.967, round(fitMeasures(fit1.1[c("cfi")], digits=3), round(fitMeasures(fit1.1[c("tli")], digits=3))))
+
+m2.1 <- m2 <- 'PF2 =~ PF2a_Confidence + PF2b_Confidence + PF2d_Confidence + PF2e_Confidence'
+fit2.1 <- cfa(m2.1,data = PF.number, std.lv=TRUE)
+PL2table <- c('PL2', "PL2a, PL2b, PL2d, PL2e")
+
+m3 <- 'PF3 =~ PF3a_Confidence + PF3b_Confidence + PF3c_Confidence + PF3d_Confidence + PF3e_Confidence'
+fit3 <- cfa(m3,data = PF.number, std.lv=TRUE)
+PL3table <- c("PL3", "PL3a, PL3b, PL3c, PL3d, PL3e")
+
+m4.1 <- 'PF4 =~ PF4a_Confidence + PF4b_Confidence
+       PF5 =~ PF5a_Confidence + PF5b_Confidence'
+fit4.1 <- cfa(m4.1,data = PF.number, std.lv=TRUE)
+PL4table <- c("PL4", "PL4a, PL4b")
+PL4table <- c("PL5", "PL5a, PL5b")
+
+PFTable <- rbind(PF1table,PF2table,PF3table,PF4table,PF5table,PF6table,PF7table,PF8table)
+colnames(PFTable) <- c("Section","Questions","P-Value","CFI","TLI")
+rownames(PFTable) <- NULL
+kable(PFTable,digits=3,booktabs=T,caption="TABLE C: 'Performance & Feedback' Subdomain Summary")
+```
+
 
 ## Learning Experience Domain Analysis
 For learning experience table in TELL Statements, we numeric character answers of LE 1a~6d Confidence, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LE1 has 5 variables: LE1a_Confidence, LE1b_Confidence, LE1c_Confidence,LE1d_Confidence and LE1e_Confidence).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results
