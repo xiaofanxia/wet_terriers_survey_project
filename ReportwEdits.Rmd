@@ -47,53 +47,32 @@ In this report, we will primarily focus on the questions regarding "Confidence".
 
 We conducted a basic Exploratory Data Analysis (EDA) for this project. Firstly, we focus on the time for respondents to complete this survey.
 
-```{r hist of user review counts,fig.height=8,fig.width=7, message=FALSE, echo=FALSE}
+```{r hist of user review counts,fig.height=8,fig.width=7, warning = FALSE, message=FALSE, echo=FALSE}
 library(lubridate)
 library(hms)
 library(ggplot2)
 library(dplyr)
 library(cowplot)
 survey <- read.csv("survey.csv")
+
 #Uniform newest part time into POSIX objects:
 survey$Start.Date <- strptime(survey$Start.Date, format = "%m/%d/%Y %H:%M:%S")
 survey$End.Date <- strptime(survey$End.Date, format = "%m/%d/%Y %H:%M:%S")
+
 #Time people used to finish the survey:
 survey$time <- as.numeric(round(abs(difftime(survey$End.Date, survey$Start.Date, units = "mins")),2))
+
 #Count number of NA values in rows:
 survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
-#graph the plot:
-# graph <- ggplot(survey, aes(x=time, y=num)) +
-#   geom_point(na.rm = TRUE)
-# graph <- graph + labs(x = "Time people used in survey(min)", y = "Number of questions they didn't answer") 
-# graph
 time <- as.data.frame(na.omit(survey$time))
 time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
 colnames(time)[2] <- "# of unanswered questions"
-par(mfrow=c(2,4))
-session1 <- filter(time,`Time people used(minutes)` <= 15)
-session2 <- filter(time, `Time people used(minutes)` > 15 & `Time people used(minutes)` <= 30)
-session3 <- filter(time, `Time people used(minutes)` > 30 & `Time people used(minutes)` <= 60)
-session4 <- filter(time, `Time people used(minutes)` > 60 & `Time people used(minutes)` <= 1000)
-session5 <- filter(time, `Time people used(minutes)` > 1000 & `Time people used(minutes)` <= 1600)
-#From 0-15min:
-p1 <- ggplot(session1, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
-  geom_bar(stat = "identity") + ggtitle("Time used in 0-15 minutes") 
-#From 15-30min:
-p2 <- ggplot(session2, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
-  geom_bar(stat = "identity") + ggtitle("Time used in 16-30 munites")
-#From 31-60min:
-p3 <- ggplot(session3, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
-  geom_bar(stat = "identity") + ggtitle("Time used in 31-60 munites")
-#From 61-120min:
-p4 <- ggplot(session4, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
-  geom_bar(stat = "identity") + ggtitle("Time used in 61-400 munites")
-#From 121-300min:
-p5 <- ggplot(session5, aes(x=`Time people used(minutes)`, y=`# of unanswered questions`)) + 
-  geom_bar(stat = "identity") + ggtitle("Time used in 401-1600 munites")
-plot_grid(p1, p2, p3, p4, p5, nrow = 3, ncol = 2)
+hist(time$`# of unanswered questions`,xlm = c(0,200), main = "Histogram of the frequency of unanswered questions in the survey", xlab="Number of unanswered questions") 
+
 ```
 
+From this graph, it shows that most people (about 29 people) did not answer any questions in the survey, and the second high frequency (about 19 people) in the survey answered all questions, rest of people answered questions between 0 to 200. 
 
 
 ## Data Cleaning
@@ -293,6 +272,8 @@ m1.1 <- 'PF1 =~ PF1a_Confidence + PF1b_Confidence + PF1c_Confidence + PF1d_Confi
 fit1.1 <- cfa(m1.1,data = PF.number, std.lv=TRUE)
 PF1table <- c("PF1","PF1a,PF1b,PF1c,PF1d",0.967, round(fitMeasures(fit1.1)[c("cfi")],digits=3),round(fitMeasures(fit1.1)[c("tli")],digits=3))
 
+
+# Second subdomain
 m2.1 <- 'PF2 =~ PF2a_Confidence + PF2b_Confidence + PF2d_Confidence + PF2e_Confidence'
 fit2.1 <- cfa(m2.1,data = PF.number, std.lv=TRUE)
 PF2table <- c("PF2","PF2a,PF2b,PF2d,PF2e",0.459, round(fitMeasures(fit2.1)[c("cfi")],digits=3),round(fitMeasures(fit2.1)[c("tli")],digits=3))
