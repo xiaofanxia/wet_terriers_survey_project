@@ -69,10 +69,21 @@ time$num <- survey$num[1:74]
 colnames(time)[1] <- "Time people used(minutes)"
 colnames(time)[2] <- "# of unanswered questions"
 hist(time$`# of unanswered questions`,xlm = c(0,200), main = "Histogram of the frequency of unanswered questions in the survey", xlab="Number of unanswered questions") 
+#Count number of NA values in rows:
+survey$num <- apply(survey, MARGIN = 1, FUN=function(x) length(x[is.na(x)]))
+time <- as.data.frame(na.omit(survey$time))
+time$num <- survey$num[1:74]
+colnames(time)[1] <- "Time people used(minutes)"
+colnames(time)[2] <- "# of unanswered questions"
+
+hist(time$`# of unanswered questions`,xlm = c(0,200), main = "Histogram of the frequency of unanswered questions in the survey", xlab="Number of unanswered questions") 
+plot(density(time$`Time people used(minutes)`), main = "Density plot for timing", xlab = "Minutes people used in the survey")
 
 ```
 
-From this graph, it shows that most people (about 29 people) did not answer any questions in the survey, and the second high frequency (about 19 people) in the survey answered all questions, rest of people answered questions between 0 to 200. 
+From the histogram graph, it shows that most people (about 29 people) did not answer any questions in the survey, and the second high frequency (about 19 people) in the survey answered all questions, rest of people answered questions between 0 to 200. 
+
+From the density plot, it shows most people spend no longer than about 100 minutes for this survey, and only few of people used about 600 minutes or ever longer than 1300 minutes.
 
 
 ## Data Cleaning
@@ -364,93 +375,6 @@ In this report, we have proposed a structure to group and remove large set of qu
 The questions removed from the subdomains must be considered separately. Usually, they were removed because the way they were answered followed a significantly different pattern from other questions. There may be a final structure that does group these with the rest. Our analysis only shows that they don't fit best under the groupings provided by the TELL framework.
 
 ## Appendix
-
-## Planning Domain
-
-## Subdomain 1
-```{r,echo=F}
-summary(fit1,standardized=T)
-parameterEstimates(fit1,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 2
-```{r,echo=F}
-summary(fit2,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit2,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 3
-
-```{r,echo=F}
-summary(fit3,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit3,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 4
-
-```{r,echo=F}
-
-summary(fit4,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit4,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 5
-
-```{r,echo=F}
-
-summary(fit5,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit5,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 6
-
-```{r,echo=F}
-
-summary(fit6,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit6,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 7
-
-```{r,echo=F}
-
-summary(fit7,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit7,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-```
-
-## Subdomain 8
-
-```{r,echo=F}
-
-summary(fit8,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
-parameterEstimates(fit8,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-
-```
-
 
 ## Learning Tool Domain Analysis
 For Learning Tools table in TELL Statements, we numeric character answers of LT 1a~5c Confidence, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LT1 has 3 variables: LT1a_Confidence, LT1b_Confidence, LT1c_Confidence).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results:
