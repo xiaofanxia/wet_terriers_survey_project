@@ -133,7 +133,7 @@ colnames(surveyanswers)[c(grep("LT1a _Contributes",colnames(surveyanswers)))] <-
 colnames(surveyanswers)[c(grep("LT5c_Contributes.1",colnames(surveyanswers)))] <- "LT56c_Contributes"
 data.LT <- surveyanswers[,c(grep("LT",colnames(surveyanswers)))]
 data.LT <- data.LT[,c(grep("Contributes",colnames(data.LT)))]
-ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
+ans = c("I'm not sure what this means", "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree")
 LT.ordered <- data.LT
 LT.numer <- data.LT
 for (i in 1:ncol(data.LT)) {
@@ -151,7 +151,7 @@ colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <
 
 data.PL <- surveyanswers[,c(grep("PL",colnames(surveyanswers)))]
 data.PL <- data.PL[,c(grep("Contributes",colnames(data.PL)))]
-ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
+ans = c("I'm not sure what this means", "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree")
 PL.ordered <- data.PL
 PL.numer <- data.PL
 for (i in 1:ncol(data.PL)) {
@@ -213,10 +213,11 @@ The P-values for each of the model all are relatively high, indicating that they
 
 
 ## Learning Tool Domain
+
 ```{r, include=F}
 data.LT <- surveyanswers[,c(grep("LT",colnames(surveyanswers)))]
 data.LT <- data.LT[,c(grep("Contributes",colnames(data.LT)))]
-ans = c("I'm not sure what this means", "Not confident at all","Somewhat confident","Neutral","Confident","Very Confident")
+ans = c("I'm not sure what this means", "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree")
 LT.ordered <- data.LT
 LT.numer <- data.LT
 for (i in 1:ncol(data.LT)) {
@@ -227,37 +228,31 @@ colnames(LT.numer) <- colnames(data.LT)
 
 LT1 <- 'lt1 =~ aa*LT1a_Contributes + aa*LT1b_Contributes + LT1c_Contributes '
 fit1 <- cfa(LT1,data=LT.numer,std.lv=T)
-LT1table <- c("LT1","LT1a,LT1b,LT1c",0.741, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
+LT1table <- c("LT1","LT1a,LT1b,LT1c",0.885, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
 
-LT2 <- 'lt2 =~ aa*LT2a_Contributes + aa*LT2b_Contributes + LT2c_Contributes'
-fit2 <- cfa(LT2,data=LT.numer,std.lv=T)
-LT2table <- c("LT2","LT2a,LT2b,LT2c",0.953, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
-
-
-LT3 <- 'lt3 =~ LT3a_Contributes + aa*LT3b_Contributes + aa*LT3d_Contributes'
-fit3 <- cfa(LT3,data=LT.numer,std.lv=T)
-LT3table <- c("LT3","LT3a,LT3b,LT3d",0.897, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
+LT2new <- 'lt2new =~ LT1a_Contributes + LT1b_Contributes + LT1c_Contributes+LT2a_Contributes'
+fit2new <- cfa(LT2new,data=LT.numer,std.lv=T)
+LT2table <- c("LT1&LT2","LT1a,LT1b,LT1c,LT2a",0.659, round(fitMeasures(fit2new)[c("cfi")],digits=3),round(fitMeasures(fit2new)[c("tli")],digits=3))
 
 
-
-LT4 <- 'lt4 =~ LT4a_Contributes + aa*LT4b_Contributes + aa*LT4c_Contributes'
-fit4 <- cfa(LT4,data=LT.numer,std.lv=T)
-LT4table <- c("LT4","LT4a,LT4b,LT4c",0.899, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
+LT3new <- 'lt3 =~ LT3a_Contributes+LT3b_Contributes+LT3c_Contributes+LT3d_Contributes+LT4b_Contributes'
+fit3new <- cfa(LT3new,data=LT.numer,std.lv=T)
+LT3table <- c("LT3&LT4","LT3a,LT3b,LT3c,LT3d,LT4b",0.149, round(fitMeasures(fit3new)[c("cfi")],digits=3),round(fitMeasures(fit3new)[c("tli")],digits=3))
 
 
 LT5 <- 'lt5 =~ aa*LT5a_Contributes + LT5b_Contributes + aa*LT5c_Contributes'
 fit5 <- cfa(LT5,data=LT.numer,std.lv=T)
-LT5table <- c("LT5","LT5a,LT5b,LT5c",0.379, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
+LT5table <- c("LT5","LT5a,LT5b,LT5c",0.141, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
 ```
 
 ```{r,echo=F}
-LTTable <- rbind(LT1table,LT2table,LT3table,LT4table,LT5table)
+LTTable <- rbind(LT2table,LT3table,LT5table)
 colnames(LTTable) <- c("Section","Questions","P-Value","CFI","TLI")
 rownames(LTTable) <- NULL
 kable(LTTable,digits=3,format="pandoc",caption="'Learning Tools' Subdomain Summary")
 ```
 
-The summary statistics for the Learning Tools subdomains are shown in Table 2. As before, questions included in each subdomain are listed in the "Questions" column. The only question removed due to the protocal was LT3c, which may need to be treated separately.  The CFI and TLI both seem high and close to 1 respectively, showing that the data and proposed models are relatively close. LT1 may need to be considered more closely, since its LT1 is relatively larger than the rest of these values. However, it still seems to show a relatively close comparison between the data and proposed models.
+The summary statistics for the Learning Tools subdomains are shown in Table 2. As before, questions included in each subdomain are listed in the "Questions" column. The questions removed due to the protocal were LT2b, LT2c, LT4a, and LT4c, which may need to be treated separately.  The CFI and TLI both seem high and close to 1 respectively, showing that the data and proposed models are relatively close. LT1 may need to be considered more closely, since its LT1 is relatively larger than the rest of these values. However, it still seems to show a relatively close comparison between the data and proposed models.
 Once again, our p-values indicate that the null hypothesis cannot be rejected, and the questions can effectively be grouped into a subdomain.
 
 ## Per & Feedback Domain
@@ -375,7 +370,9 @@ The questions removed from the subdomains must be considered separately. Usually
 
 ## Learning Tool Domain Analysis
 For Learning Tools table in TELL Statements, we numeric character answers of LT 1a~5c Contributes, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LT1 has 3 variables: LT1a_Contributes, LT1b_Contributes, LT1c_Contributes).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results:
+
 # First subdomain:
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 LT1 <- 'lt1 =~ aa*LT1a_Contributes + aa*LT1b_Contributes + LT1c_Contributes '
 fit1 <- cfa(LT1,data=LT.numer,std.lv=T)
@@ -384,24 +381,39 @@ parameterEstimates(fit1,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.741>0.05. Factor loadings: a-0.488;b-0.472;c-0.722. cfi=1;ltli=1.607.
+#P-value=0.885>0.05. Factor loadings: a-0.825;b-0.904;c-0.711. cfi=1;ltli=1.063.
 ```
 
-Since p-value of the first subdomain is 0.741 > 0.05, there is no need to make any change in the first subdomain and we can save all questions. 
+Since p-value of the first subdomain is 0.885> 0.05 and all factor loadings are larger than 0.55, there is no need to make any change in the first subdomain. 
 
 # Second subdomain
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
-LT2 <- 'lt2 =~ aa*LT2a_Contributes + aa*LT2b_Contributes + LT2c_Contributes'
+LT2 <- 'lt2 =~ LT2a_Contributes + aa*LT2b_Contributes + aa*LT2c_Contributes'
 fit2 <- cfa(LT2,data=LT.numer,std.lv=T)
 summary(fit2,standardized=T)
 parameterEstimates(fit2,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.953>0.05. Factor loadings: a-0.587;b-0.603;c-0.817. cfi=1; tli=1.234.
+#P-value=0.077>0.05. Factor loadings: a-1.124;b-0.477;c-0.448. cfi=0.901; tli=0.703.
 ```
 
-Since p-value of the second subdomain is 0.953 > 0.05, there is no need to make any change in the second subdomain and we can save all questions. 
+Since p-value of the second subdomain is 0.077 > 0.05 and question b & c have factor loadings smaller than 0.55, so we suggest that these two questions do not fit in this subdomain. 
+
+# First subdomain and second subdomain
+
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+LT2new <- 'lt2new =~ LT1a_Contributes + LT1b_Contributes + LT1c_Contributes+ LT2a_Contributes'
+fit2new <- cfa(LT2new,data=LT.numer,std.lv=T)
+summary(fit2new,standardized=T)
+parameterEstimates(fit2new,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+#P-value=0.659>0.05. Factor loadings: 1a-0.799;1b-0.944;1c-0.676; 2a-0.899;cfi=1; tli=1.038.
+```
+
+After adding the remain question LT2a into LT1 subdomain, the model fits well. 
 
 # Third subdomain
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
@@ -412,38 +424,39 @@ parameterEstimates(fit3,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#Initial p-value with 4 questions is 0.008. 
+#p-value-0.083;a-0.891;b-0.946;c-0.819;d-0.737;cfi-0.972;tli-0.916.
 ```
 
-Since p-value of the third subdomain is 0.008 < 0.05, and question "LT3c_Contributes" has the lowest factor loading 0.604, we drop "LT3_c_Contributes" and then remodel the third subdomain. 
+Since p-value of the third subdomain is 0.083 < 0.05, and all factor loadings are larger than 0.55, all questions fit well in the subdomain. 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE }
-LT3_new <- 'lt3 =~ LT3a_Contributes + aa*LT3b_Contributes + aa*LT3d_Contributes'
-fit3new <- cfa(LT3_new,data=LT.numer,std.lv=T)
-summary(fit3new,standardized=T)
-parameterEstimates(fit3new,standardized=T) %>%
-  filter(op=="=~") %>%
-  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
-  kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#Initial p-value with 4 questions is 0.008. 
-#After dropping question c, the p-value=0.897. Factor loadings:a-0.959;b-0.802;d-0.629. cfi=1;tli=1.087.
-```
-
-After we remodel the third subdomain, the p-value of third domain is 0.897 > 0.05. Then we can save all the remaining questions in the third subdomain ("LT3a_Contributes", "LT3b_Contributes", "LT3d_Contributes"). 
 
 # Fourth subdomain
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
-LT4 <- 'lt4 =~ LT4a_Contributes + aa*LT4b_Contributes + aa*LT4c_Contributes'
+LT4 <- 'lt4 =~ aa*LT4a_Contributes + LT4b_Contributes + aa*LT4c_Contributes'
 fit4 <- cfa(LT4,data=LT.numer,std.lv=T)
 summary(fit4,standardized=T)
 parameterEstimates(fit4,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.899. Factor loadings: a-0.469;b-1.012;c-0.886. cfi=1; tli=1.06.
+#P-value=0.038. Factor loadings: a-0.446;b-1.27;c-0.481. cfi=0.895; tli=0.686.
 ```
 
-Since p-value of the fourth subdomain is 0.899 > 0.05, there is no need to make any change in the fourth subdomain and we can save all questions. 
+Since p-value of the fourth subdomain is 0.038 < 0.05, we need to remove the  (a&c) with small factor loadings to fit the model.
+
+# Third subdomain and fourth subdomain
+```{r echo=FALSE, message=FALSE, warning=FALSE }
+LT4new <- 'lt3 =~ LT3a_Contributes + LT3b_Contributes + LT3c_Contributes + LT3d_Contributes+ LT4b_Contributes'
+fit4new <- cfa(LT4new,data=LT.numer,std.lv=T)
+summary(fit4new,standardized=T)
+parameterEstimates(fit4new,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+#p-value-0.149;3a-0.895;3b-0.929;3c-0.834;3d-0.746;4b-0.794;cfi-0.977;tli-0.955.
+```
+
+After combining the LT3 subdomain and LT4b, the model fits very well.
 
 # Fifth subdomain
 ```{r echo=FALSE, message=FALSE, warning=FALSE }
@@ -454,14 +467,15 @@ parameterEstimates(fit5,standardized=T) %>%
   filter(op=="=~") %>%
   select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
-#P-value=0.379. Factor loadings: a-0.618;b-0.844;c-0.532. cfi=1; tli=1.055.
+#P-value=0.141. Factor loadings: a-0.521;b-0.99;c-0.556. cfi=0.946; tli=0.837.
 ```
 
-Since p-value of the fifth subdomain is 0.379 > 0.05, there is no need to make any change in the fifth subdomain and we can save all questions. 
+Since p-value of the fifth subdomain is 0.141 > 0.05 and all factor loadings are larger than or around 0.55, there is no need to make any change in the fifth subdomain.
 
 ## PER & FEEDBACK Domain Analysis
 For PER&FEEDBACK table in TELL Statements, I numeric character answers of PF 1a~5c Contributes, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain whose variables should greater than 2 (ex: PF1 has 5 variables: PF1a_Contributes, PF1b_Contributes, PF1c_Contributes,PF1d_Contributes and PF1e_Contributes), or the P-value of that model will become NA. And we get an exception in PF table: PF4 only has 2 varaibles, so I combine PF4 with PF5 to one CFA model so that we have an available P-value. Second, we find factor loadings of each variables in each subdomain and record them. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again.
 Following are detailed results   
+
 # First subdomain:
 ```{r, echo=FALSE}
 colnames(surveyanswers)[c(grep("PF1a _Contributes",colnames(surveyanswers)))] <- "PF1a_Contributes"
