@@ -164,39 +164,39 @@ colnames(PL.numer) <- colnames(data.PL)
 PL1 <- 'pl1 =~ PL1a_Contributes + PL1b_Contributes + PL1c_Contributes + PL1d_Contributes + PL1f_Contributes
 PL1a_Contributes ~~ PL1f_Contributes'
 fit1 <- cfa(PL1,data=PL.numer,std.lv=T) 
-PL1table <- c("PL1","PL1a,PL1b,PL1c,PL1d,PL1f",0.887, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
+PL1table <- c("PL1","PL1a,PL1b,PL1c,PL1d,PL1f",0.085, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
 
 
 PL2 <- 'pl2 =~ aa*PL2a_Contributes + aa*PL2b_Contributes + PL2c_Contributes'
 fit2 <- cfa(PL2,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL2table <- c("PL2","PL2a,PL2b,PL2c",0.292, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
+PL2table <- c("PL2","PL2a,PL2b,PL2c",0.8, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
 
 PL3 <- 'pl3 =~ PL3a_Contributes + aa*PL3d_Contributes + aa*PL3e_Contributes'
 fit3 <- cfa(PL3,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL3table <- c("PL3","PL3a,PL3d,PL3e",0.902, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
+PL3table <- c("PL3","PL3a,PL3d,PL3e",0.772, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
 
 
 PL4 <- 'pl4 =~ aa*PL4a_Contributes + aa*PL4b_Contributes + PL4c_Contributes'
 fit4 <- cfa(PL4,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL4table <- c("PL4","PL4a,PL4b,PL4c",0.051, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
+PL4table <- c("PL4","PL4a,PL4b,PL4c",0.221, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
 
 PL5 <- 'pl5 =~ PL5a_Contributes + PL5b_Contributes + PL5c_Contributes + PL5d_Contributes'
 fit5 <- cfa(PL5,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL5table <- c("PL5","PL5a,PL5b,PL5c,PL5d",0.261, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
+PL5table <- c("PL5","PL5a,PL5b,PL5c,PL5d",0.121, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
 
 
 PL6 <- 'pl6 =~ aa*PL6a_Contributes + aa*PL6b_Contributes + PL6c_Contributes'
 fit6 <- cfa(PL6,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL6table <- c("PL6","PL6a,PL6b,PL6c",0.283, round(fitMeasures(fit6)[c("cfi")],digits=3),round(fitMeasures(fit6)[c("tli")],digits=3))
+PL6table <- c("PL6","PL6a,PL6b,PL6c",0.362, round(fitMeasures(fit6)[c("cfi")],digits=3),round(fitMeasures(fit6)[c("tli")],digits=3))
 
 PL7 <- 'pl7 =~ aa*PL7a_Contributes + PL7b_Contributes + aa*PL7c_Contributes'
 fit7 <- cfa(PL7,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL7table <- c("PL7","PL7a,PL7b,PL7c",0.903, round(fitMeasures(fit7)[c("cfi")],digits=3),round(fitMeasures(fit7)[c("tli")],digits=3))
+PL7table <- c("PL7","PL7a,PL7b,PL7c",0.409, round(fitMeasures(fit7)[c("cfi")],digits=3),round(fitMeasures(fit7)[c("tli")],digits=3))
 
 
 PL8 <- 'pl8 =~ PL8a_Contributes + aa*PL8b_Contributes + aa*PL8c_Contributes'
 fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL8table <- c("PL8","PL8a,PL8b,PL8c",0.301, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
+PL8table <- c("PL8","PL8a,PL8b,PL8c",0.724, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
 ```
 
 ## Planning Domain
@@ -319,33 +319,33 @@ PL.factor <- select(survey,'LE1a_Contributes':'LE6d_Contributes')
 PL.factor <-lapply(PL.factor,function(x) as.numeric(as.factor(x)))
 PL.factor <- as.data.frame(PL.factor)
 
-LE1model<-'LE1 =~LE1a_Contributes+LE1b_Contributes+LE1c_Contributes+LE1d_Contributes'
+LE1model<-'LE1 =~LE1a_Contributes+LE1b_Contributes+LE1c_Contributes+LE2e_Contributes'
 fitLE1 <- cfa(LE1model,data=PL.factor,std.lv=T)
-LE1table <- c("LE1","LE1a,LE1b,LE1c,LE1d",0.672, round(fitMeasures(fitLE1)[c("cfi")],digits=3),round(fitMeasures(fitLE1)[c("tli")],digits=3))
+LE1table <- c("LE1","LE1a,LE1b,LE1c,LE1e",0.52, round(fitMeasures(fitLE1)[c("cfi")],digits=3),round(fitMeasures(fitLE1)[c("tli")],digits=3))
 
-LE2model<-'LE2 =~LE2a_Contributes+LE2c_Contributes+LE2d_Contributes+LE2f_Contributes'
+LE2model<-'LE2 =~LE2a_Contributes+LE2c_Contributes+LE2d_Contributes+LE2e_Contributes+LE2f_Contributes'
 fitLE2 <- cfa(LE2model,data=PL.factor,std.lv=T)
-LE2table <- c("LE2","LE2a,LE2c,LE2d,LE2f",0.412, round(fitMeasures(fitLE2)[c("cfi")],digits=3),round(fitMeasures(fitLE2)[c("tli")],digits=3))
+LE2table <- c("LE2","LE2a,LE2c,LE2d,LE2e,LE2f",0.176, round(fitMeasures(fitLE2)[c("cfi")],digits=3),round(fitMeasures(fitLE2)[c("tli")],digits=3))
 
 
-LE3model<-'LE3 =~LE3a_Contributes+LE3b_Contributes+LE3d_Contributes+LE3e_Contributes+LE3f_Contributes'
+LE3model<-'LE3 =~LE3b_Contributes+LE3d_Contributes+LE3e_Contributes+LE3f_Contributes+LE3g_Contributes'
 fitLE3 <- cfa(LE3model,data=PL.factor,std.lv=T)
-LE3table <- c("LE3","LE3a,LE3b,LE3d,LE3e,LE3f",0.951, round(fitMeasures(fitLE3)[c("cfi")],digits=3),round(fitMeasures(fitLE3)[c("tli")],digits=3))
+LE3table <- c("LE3","LE3b,LE3d,LE3e,LE3f,LE3g",0.142, round(fitMeasures(fitLE3)[c("cfi")],digits=3),round(fitMeasures(fitLE3)[c("tli")],digits=3))
 
 
-LE4model<-'LE4 =~LE4a_Contributes+LE4b_Contributes+LE4c_Contributes+LE4d_Contributes'
+LE4model<-'LE4 =~LE4a_Contributes+LE4b_Contributes+LE4c_Contributes+LE4e_Contributes'
 fitLE4 <- cfa(LE4model,data=PL.factor,std.lv=T)
-LE4table <- c("LE4","LE4a,LE4b,LE4c,LE4d",0.13, round(fitMeasures(fitLE4)[c("cfi")],digits=3),round(fitMeasures(fitLE4)[c("tli")],digits=3))
+LE4table <- c("LE4","LE4a,LE4b,LE4c,LE4e",0.811, round(fitMeasures(fitLE4)[c("cfi")],digits=3),round(fitMeasures(fitLE4)[c("tli")],digits=3))
 
 
-LE5model<-'LE5 =~aa*LE5a_Contributes+aa*LE5c_Contributes+LE5d_Contributes'
+LE5model<-'LE5 =~LE5a_Contributes+LE5b_Contributes+LE5c_Contributes+LE5d_Contributes'
 fitLE5 <- cfa(LE5model,data=PL.factor,std.lv=T)
-LE5table <- c("LE5","LE5a,LE5c,LE5d",0.857, round(fitMeasures(fitLE5)[c("cfi")],digits=3),round(fitMeasures(fitLE5)[c("tli")],digits=3))
+LE5table <- c("LE5","LE5a,LE5b,LE5c,LE5d",0.765, round(fitMeasures(fitLE5)[c("cfi")],digits=3),round(fitMeasures(fitLE5)[c("tli")],digits=3))
 
 
-LE6model<-'LE6 =~aa*LE6b_Contributes+LE6c_Contributes+aa*LE6d_Contributes'
+LE6model<-'LE6 =~aa*LE6a_Contributes+LE6b_Contributes+aa*LE6d_Contributes'
 fitLE6 <- cfa(LE6model,data=PL.factor,std.lv=T)
-LE6table <- c("LE6","LE6b,LE6c,LE6d",0.657, round(fitMeasures(fitLE6)[c("cfi")],digits=3),round(fitMeasures(fitLE6)[c("tli")],digits=3))
+LE6table <- c("LE6","LE6a,LE6b,LE6d",0.33, round(fitMeasures(fitLE6)[c("cfi")],digits=3),round(fitMeasures(fitLE6)[c("tli")],digits=3))
 ```
 
 ```{r,echo=F}
@@ -356,9 +356,9 @@ kable(LETable,digits=3,format="pandoc",caption="'Learning Experience' Subdomain 
 
 ```
 
-The results for the Learning Experience Domain can be shown in Table 4. The questions removed due to the question removal protocol are LE1a, LE2b, LE2e, LE3c, LE3g, LE4e, LE5b, and LE6a. These questions may need to be treated separately when restructuring the survey.
+The results for the Learning Experience Domain can be shown in Table 4. The questions removed due to the question removal protocol are LE1d, LE2b, LE3a, LE3c, LE4d, and LE6c. These questions may need to be treated separately when restructuring the survey.
 
-Our CFI and TLI values are both high and close to 1, indicating that the models fit the data. The TLI for LE3 is relatively higher than the rest, which may mean it needs to be considered separately. However, it is still relatively close to 1, and still indicates a decent fit between data and model. The p-values are above our threshold of 0.05, indicating that each one groups each set of questions well.
+Our CFI and TLI values are both high and close to 1, indicating that the models fit the data. The TLI for LE4 is relatively higher than the rest, which may mean it needs to be considered separately. However, it is still relatively close to 1, and still indicates a decent fit between data and model. The p-values are above our threshold of 0.05, indicating that each one groups each set of questions well.
 
 # 5. Conclusion
 
@@ -541,6 +541,7 @@ parameterEstimates(fit3, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 #Factor loadings: 0.819; 0.6; 0.881; 0.543; 0.923
 ```
+
 Since p-value < 0.05, and the factor loadings of "PF3d_Contributes" is lowest, thus, we try to drop it from the second subdomain:
 ```{r}
 m3.1 <- 'PF3 =~ PF3a_Contributes + PF3b_Contributes + PF3c_Contributes + PF3e_Contributes'
@@ -606,9 +607,16 @@ parameterEstimates(fitLE1, standardized=TRUE) %>%
   filter(op == "=~") %>% 
   select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
+LE1model<-'LE1 =~LE1a_Contributes+LE1b_Contributes+LE1c_Contributes+LE1e_Contributes'
+fitLE1 <- cfa(LE1model,data=PL.factor)
+summary(fitLE1)
+parameterEstimates(fitLE1, standardized=TRUE) %>% 
+  filter(op == "=~") %>% 
+  select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-The p-value of this subdomian is 0.762, so we will keep all the questions in this subdomian.
+The factor loading of LE1d is 0.503, so we will remove it. Then the new model has 0.446 p value.
 
 ## Second Subdomain
 ```{r,echo=F}
@@ -619,11 +627,12 @@ parameterEstimates(fitLE2, standardized=TRUE) %>%
   filter(op == "=~") %>% 
   select('Latent Factor'=lhs, Indicator=rhs, B=est, SE=se, Z=z, 'p-value'=pvalue, loading=std.all) %>% 
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
+
 ```
 
-In the second subdomain, the p-value is 0.028<0.05, so we will drop the question LE2a to see how the model will be.
+In the second subdomain, the loading of LE2b is less than 0.55, so we will drop it and keep all the others.
 ```{r,echo=F}
-LE2model<-'LE2 =~LE2b_Contributes+LE2c_Contributes+LE2d_Contributes+LE2e_Contributes+LE2f_Contributes'
+LE2model<-'LE2 =~LE2a_Contributes+LE2c_Contributes+LE2d_Contributes+LE2e_Contributes+LE2f_Contributes'
 fitLE2 <- cfa(LE2model,data=PL.factor)
 summary(fitLE2)
 parameterEstimates(fitLE2, standardized=TRUE) %>% 
@@ -632,11 +641,10 @@ parameterEstimates(fitLE2, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-After dropping the LE2a, we have a p value of 0.9>0.05. So we will keep all the other questions.
 
 ## Third Subdomain
 ```{r,echo=F}
-LE3model<-'LE3 =~LE3a_Contributes+LE3b_Contributes+LE3c_Contributes+LE3d_Contributes+LE3e_Contributes+LE3f_Contributes+LE3g_Contributes'
+LE3model<-'LE3 =~LE3b_Contributes+LE3d_Contributes+LE3e_Contributes+LE3f_Contributes+LE3g_Contributes'
 fitLE3 <- cfa(LE3model,data=PL.factor)
 summary(fitLE3)
 parameterEstimates(fitLE3, standardized=TRUE) %>% 
@@ -645,11 +653,11 @@ parameterEstimates(fitLE3, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-In the third subdomian,we have a p value of 0.117>0.05, so we will keep all the questions.
+In the third subdomian,we drop the LE3a, LE3c due to low factor loading and keeps all the others.
 
 ## Fourth Subdomain
 ```{r,echo=F}
-LE4model<-'LE4 =~LE4a_Contributes+LE4b_Contributes+LE4c_Contributes+LE4d_Contributes+LE4e_Contributes'
+LE4model<-'LE4 =~LE4a_Contributes+LE4b_Contributes+LE4c_Contributes+LE4e_Contributes'
 fitLE4 <- cfa(LE4model,data=PL.factor)
 summary(fitLE4)
 parameterEstimates(fitLE4, standardized=TRUE) %>% 
@@ -658,7 +666,7 @@ parameterEstimates(fitLE4, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-In the fourth subdomain, we have a p value of 0.153. We will keep all the questions in this subdomain.
+In the fourth subdomain, we drop LE4d due to low loading.
 
 ## Fifth subdomain
 ```{r,echo=F}
@@ -671,11 +679,11 @@ parameterEstimates(fitLE5, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-In the fifth subdomain, we have a p-value of 0.123, so we will keep all the questions in this dubdomain.
+In the fifth subdomain, we have a p-value of 0.765, so we will keep all the questions in this dubdomain.
 
 ## Sixth subdomain
 ```{r,echo=F}
-LE6model<-'LE6 =~LE6a_Contributes+LE6b_Contributes+LE6c_Contributes+LE6d_Contributes'
+LE6model<-'LE6 =~aa*LE6b_Contributes+LE6c_Contributes+aa*LE6d_Contributes'
 fitLE6 <- cfa(LE6model,data=PL.factor)
 summary(fitLE6)
 parameterEstimates(fitLE6, standardized=TRUE) %>% 
@@ -684,5 +692,5 @@ parameterEstimates(fitLE6, standardized=TRUE) %>%
   kable(digits = 3, format="pandoc", caption="Factor Loadings")
 ```
 
-In the sixth subdomain, the p-value is 0.66>0.05. We will not drop any question in this subdomain.
+In the sixth subdomain, the a is dropping due to low factor loading.
 
