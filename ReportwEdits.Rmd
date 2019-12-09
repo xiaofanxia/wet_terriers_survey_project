@@ -144,14 +144,14 @@ colnames(LT.numer) <- colnames(data.LT)
 ```
 
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 survey <- cbind(personinfo,surveyanswers)
-colnames(surveyanswers)[c(grep("PL1a _Contributes",colnames(surveyanswers)))] <- "PL1a_Contributes"
-colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <- "PL6c_Contributes"
+colnames(surveyanswers)[c(grep("PL1a _Confidence",colnames(surveyanswers)))] <- "PL1a_Confidence"
+colnames(surveyanswers)[c(grep("PL6c_Contributes.1",colnames(surveyanswers)))] <- "PL6c_Confidence"
 
 data.PL <- surveyanswers[,c(grep("PL",colnames(surveyanswers)))]
 data.PL <- data.PL[,c(grep("Contributes",colnames(data.PL)))]
-ans = c("I'm not sure what this means", "Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree")
+ans = c("I'm not sure what this means","Strongly Disagree", "Disagree","Neutral","Agree","Strongly Agree")
 PL.ordered <- data.PL
 PL.numer <- data.PL
 for (i in 1:ncol(data.PL)) {
@@ -161,55 +161,57 @@ for (i in 1:ncol(data.PL)) {
 colnames(PL.numer) <- colnames(data.PL)
 
 
-PL1 <- 'pl1 =~ PL1a_Contributes + PL1b_Contributes + PL1c_Contributes + PL1d_Contributes + PL1f_Contributes
-PL1a_Contributes ~~ PL1f_Contributes'
+#Lavaan Stuff
+
+PL1 <- 'pl1 =~ PL1a_Contributes+PL1b_Contributes+PL1c_Contributes+PL1d_Contributes+PL1e_Contributes
+PL1b_Contributes ~~ PL1d_Contributes'
 fit1 <- cfa(PL1,data=PL.numer,std.lv=T) 
-PL1table <- c("PL1","PL1a,PL1b,PL1c,PL1d,PL1f",0.085, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
+PL1table <- c("PL1","PL1a,PL1b,PL1c,PL1d,PL1e",0.220, round(fitMeasures(fit1)[c("cfi")],digits=3),round(fitMeasures(fit1)[c("tli")],digits=3))
 
 
-PL2 <- 'pl2 =~ aa*PL2a_Contributes + aa*PL2b_Contributes + PL2c_Contributes'
+PL2 <- 'pl2 =~ aa*PL2a_Contributes + PL2b_Contributes+aa*PL2c_Contributes'
 fit2 <- cfa(PL2,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL2table <- c("PL2","PL2a,PL2b,PL2c",0.8, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
+PL2table <- c("PL2","PL2a,PL2b,PL2c",0.601, round(fitMeasures(fit2)[c("cfi")],digits=3),round(fitMeasures(fit2)[c("tli")],digits=3))
 
-PL3 <- 'pl3 =~ PL3a_Contributes + aa*PL3d_Contributes + aa*PL3e_Contributes'
+PL3 <- 'pl3 =~ PL3a_Contributes + PL3b_Contributes + PL3d_Contributes + PL3e_Contributes
+PL3b_Contributes ~~ PL3d_Contributes'
 fit3 <- cfa(PL3,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL3table <- c("PL3","PL3a,PL3d,PL3e",0.772, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
+PL3table <- c("PL3","PL3a,PL3b,PL3d,PL3e",0.250, round(fitMeasures(fit3)[c("cfi")],digits=3),round(fitMeasures(fit3)[c("tli")],digits=3))
 
 
-PL4 <- 'pl4 =~ aa*PL4a_Contributes + aa*PL4b_Contributes + PL4c_Contributes'
+PL4 <- 'pl4 =~ PL4a_Contributes+aa*PL4b_Contributes+aa*PL4c_Contributes'
 fit4 <- cfa(PL4,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL4table <- c("PL4","PL4a,PL4b,PL4c",0.221, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
+PL4table <- c("PL4","PL4a,PL4b,PL4c",0.599, round(fitMeasures(fit4)[c("cfi")],digits=3),round(fitMeasures(fit4)[c("tli")],digits=3))
 
 PL5 <- 'pl5 =~ PL5a_Contributes + PL5b_Contributes + PL5c_Contributes + PL5d_Contributes'
 fit5 <- cfa(PL5,data=PL.numer,std.lv=T) #EStimate Error Variances
 PL5table <- c("PL5","PL5a,PL5b,PL5c,PL5d",0.121, round(fitMeasures(fit5)[c("cfi")],digits=3),round(fitMeasures(fit5)[c("tli")],digits=3))
 
 
-PL6 <- 'pl6 =~ aa*PL6a_Contributes + aa*PL6b_Contributes + PL6c_Contributes'
+PL6 <- 'pl6 =~ PL6a_Contributes + aa*PL6b_Contributes + aa*PL6d_Contributes'
 fit6 <- cfa(PL6,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL6table <- c("PL6","PL6a,PL6b,PL6c",0.362, round(fitMeasures(fit6)[c("cfi")],digits=3),round(fitMeasures(fit6)[c("tli")],digits=3))
+PL6table <- c("PL6","PL6a,PL6b,PL6d",0.850, round(fitMeasures(fit6)[c("cfi")],digits=3),round(fitMeasures(fit6)[c("tli")],digits=3))
 
-PL7 <- 'pl7 =~ aa*PL7a_Contributes + PL7b_Contributes + aa*PL7c_Contributes'
+PL7 <- 'pl7 =~ aa*PL7a_Contributes + aa*PL7b_Contributes + PL7c_Contributes'
 fit7 <- cfa(PL7,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL7table <- c("PL7","PL7a,PL7b,PL7c",0.409, round(fitMeasures(fit7)[c("cfi")],digits=3),round(fitMeasures(fit7)[c("tli")],digits=3))
+PL7table <- c("PL7","PL7a,PL7b,PL7c",0.337, round(fitMeasures(fit7)[c("cfi")],digits=3),round(fitMeasures(fit7)[c("tli")],digits=3))
 
-
-PL8 <- 'pl8 =~ PL8a_Contributes + aa*PL8b_Contributes + aa*PL8c_Contributes'
+PL8 <- 'pl8 =~ aa*PL8b_Contributes + aa*PL8c_Contributes + PL8d_Contributes'
 fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
-PL8table <- c("PL8","PL8a,PL8b,PL8c",0.724, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
+PL8table <- c("PL8","PL8b,PL8c,PL8d",0.186, round(fitMeasures(fit8)[c("cfi")],digits=3),round(fitMeasures(fit8)[c("tli")],digits=3))
 ```
 
 ## Planning Domain
 ```{r,echo=F}
-PLTable <- rbind(PL1table,PL2table,PL3table,PL4table,PL5table,PL6table,PL7table,PL8table)
-colnames(PLTable) <- c("Section","Questions","P-Value","CFI","TLI")
-rownames(PLTable) <- NULL
-kable(PLTable,digits=3,format="pandoc",booktabs=T,caption="'Planning' Subdomain Summary")
+PLTable2 <- rbind(PL1table,PL2table,PL3table,PL4table,PL5table,PL6table,PL7table,PL8table)
+colnames(PLTable2) <- c("Section","Questions","P-Value","CFI","TLI")
+rownames(PLTable2) <- NULL
+kable(PLTable2,digits=3,format="pandoc",caption="'Planning' Contributes Subdomain Summary")
 ```
 
-Summary statistics for the subdomains of PL1 are shown in Table 1. Questions were removed based on our protocol, and the remaining questions are shown in the “Questions” table. Questions PL1e, PL1g, PL3b,PL3c, PL6d, and PL8d were removed. All additional questions were found to not fit well within the model, and may need to be treated separately.
+Summary statistics for the subdomains of PL1 are shown in Table 1. Questions were removed based on our protocol, and the remaining questions are shown in the “Questions” table. Questions PL1f,PL1g, PL3c, PL6c, and PL8a were removed. These questions were found not to fit in these groupings, and would need to be treated separately when removing questions.
 The models meet the gold standard of a Comparative Fit Index (CFI) of 0.90, indicating that there is not a major discrepancy between the hypothetical models and the data. The Tucker-Lewis Index (TLI) for each model are also close or lower to 1, supporting that the data and models seem to be close. 
-The P-values for each of the model all are relatively high, indicating that they most likely follow the null hypothesis. Effectively, this means that the questions within the model can be grouped into their subdomain. PL4 may be the only exception, since it has a P-value close to 0.051. However, the CFI and TLI of the model remain high, so it may be correct to use it as one model.
+The P-values for each of the model all are relatively high, indicating that they most likely follow the null hypothesis. Effectively, this means that the questions within the model can be grouped into their subdomain. 
 
 
 ## Learning Tool Domain
@@ -367,6 +369,108 @@ In this report, we have proposed a structure to group and remove large set of qu
 The questions removed from the subdomains must be considered separately. Usually, they were removed because the way they were answered followed a significantly different pattern from other questions. There may be a final structure that does group these with the rest. Our analysis only shows that they don't fit best under the groupings provided by the TELL framework.
 
 ## Appendix
+
+## Planning Domain Analysis
+
+## First Subdomain
+
+```{r,echo=F}
+PL1 <- 'pl1 =~ PL1a_Contributes+PL1b_Contributes+PL1c_Contributes+PL1d_Contributes+PL1e_Contributes
+PL1b_Contributes ~~ PL1d_Contributes'
+fit1 <- cfa(PL1,data=PL.numer,std.lv=T) 
+summary(fit1,standardized=T)
+parameterEstimates(fit1,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Second Subdomain
+
+```{r,echo=F}
+PL2 <- 'pl2 =~ aa*PL2a_Contributes + PL2b_Contributes+aa*PL2c_Contributes'
+fit2 <- cfa(PL2,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit2,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit2,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Third Subdomain
+
+```{r,echo=F}
+PL3 <- 'pl3 =~ PL3a_Contributes + PL3b_Contributes + PL3d_Contributes + PL3e_Contributes
+PL3b_Contributes ~~ PL3d_Contributes'
+fit3 <- cfa(PL3,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit3,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit3,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Fourth Subdomain
+
+```{r,echo=F}
+PL4 <- 'pl4 =~ PL4a_Contributes+aa*PL4b_Contributes+aa*PL4c_Contributes'
+fit4 <- cfa(PL4,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit4,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)#No degrees of freedom if there are three questions.
+parameterEstimates(fit4,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Fifth Subdomain
+
+```{r,echo=F}
+PL5 <- 'pl5 =~ PL5a_Contributes + PL5b_Contributes + PL5c_Contributes + PL5d_Contributes'
+fit5 <- cfa(PL5,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit5,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit5,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Sixth Subdomain
+
+```{r,echo=F}
+PL6 <- 'pl6 =~ PL6a_Contributes + aa*PL6b_Contributes + aa*PL6d_Contributes'
+fit6 <- cfa(PL6,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit6,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit6,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Seventh Subdomain
+
+```{r,echo=F}
+PL7 <- 'pl7 =~ aa*PL7a_Contributes + aa*PL7b_Contributes + PL7c_Contributes'
+fit7 <- cfa(PL7,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit7,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit7,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+## Eighth Subdomain
+
+```{r,echo=F}
+PL8 <- 'pl8 =~ aa*PL8b_Contributes + aa*PL8c_Contributes + PL8d_Contributes'
+fit8 <- cfa(PL8,data=PL.numer,std.lv=T) #EStimate Error Variances
+summary(fit8,standardized=T) # 6 parameters for each model. In each thing there would be 3 manifest items (6 unique pieces)
+parameterEstimates(fit8,standardized=T) %>%
+  filter(op=="=~") %>%
+  select('Latent Factor'=lhs,Indicator=rhs,B=est,SE=se,Z=z,'p-value'=pvalue,loading=std.all) %>%
+  kable(digits = 3, format="pandoc", caption="Factor Loadings")
+```
+
+
 
 ## Learning Tool Domain Analysis
 For Learning Tools table in TELL Statements, we numeric character answers of LT 1a~5c Contributes, and NA values stay as same as NA that will not count in. First, I made CFA models for each subdomain (ex: LT1 has 3 variables: LT1a_Contributes, LT1b_Contributes, LT1c_Contributes).Then we have an available P-value for each subdomain and we find factor loadings of each variables in each subdomain. Third, we compare P-value of each subdomain to 0.05, if P-value > 0.05, our null hypothesis retained, and we do not need to make any further change on that subdomain; if P-value < 0.05, it means our null hypothesis is rejected, and we need to remodel by droping the variable with lowest factor loadings in that subdomain and check its P-value again. Following are detailed results:
